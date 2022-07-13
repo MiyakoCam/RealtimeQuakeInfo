@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>RealtimeQuakeInfo</title>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" href="../quake/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Web上で地震情報・緊急地震速報を受信して、地図上で確認できます。">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9SL593EYR6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        gtag('config', 'G-9SL593EYR6');
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet-src.js" integrity="sha512-Uj3ED3j6dg1xxMgtj4kF4W60Tc1HGboQ5gweT+hG1z8sBIc0ncFuoh3qV5XZF8ZqlEGlV9mt9E6MZhLN3zFDJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../fonts.css">
+    <link rel="stylesheet" href="../../bin/fonts/outlined_icons.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0">
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/animations/perspective.css">
+    <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/themes/material.css">
+        <style>
+            body {
+                overflow: hidden;
+                font-family: 'Noto Sans JP', sans-serif;
+                font-weight: 400;
+            }
+            input{
+                font-size: 100%;
+                font-family: 'Noto Sans JP';
+            }
+            #map {
+    bottom: 25vh;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+}
+#shindo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 25vh;
+    width: 15vw;
+}
+#shindomoji {
+    margin: 0;
+    text-align: center;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#clock {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 2rem;
+    background-color: #ffffff;
+    padding: 0 5px;
+}
+#homeinput {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 80%;
+    height: 80%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    z-index: 5555;
+    display: none;
+    padding: 10px;
+}
+#naka {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#quakeinfo {
+    position: absolute;
+    bottom: 0;
+    left: 15vw;
+    width: 50%;
+    height: 25vh;
+    padding-left: 10px;
+}
+#yosojikan {
+    display: none;
+    height: 15vh;
+    width: fit-content;
+    position: absolute;
+    bottom: 25vh;
+    left: 0;
+    z-index: 100;
+}
+#pha_con,#sha_con {
+    height: 50%;
+    width: 100%;
+    font-size: 6vh;
+    line-height: 1em;
+    color: #ffffff;
+    padding: 0 5px;
+}
+#pha_con input,#sha_con input {
+    background: none;
+    outline: none;
+    border: none;
+    font-size: 6vh;
+    width: 3em;
+    height: 1em;
+    color: #ffffff;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+#pha_con {
+    background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgba(138,153,204,1) 50%, rgba(0,44,200,1) 100%);
+}
+#sha_con {
+    background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgba(205,139,139,1) 50%, rgba(200,0,0,1) 100%);
+}
+#settings_click {
+    position: absolute;
+    top: 75vh;
+    right: 0;
+    z-index: 10;
+    margin: 10px;
+    user-select: none;
+    transition: transform 0.25s ease-in-out 0s;
+}
+#settings_click:hover {
+    transform: rotate(60deg);
+}
+#settings {
+    display: none;
+    position: relative;
+    width: 70vw;
+    height: 80vh;
+    top: 0px;
+    left: 0px;
+    background-color: #0f644f;
+    z-index: 5000;
+    box-shadow: 0px 0px 15px 5px #5c5c5c;
+    padding: 5vh 10vw;
+    margin: 5vh auto;
+    font-family: 'Noto Sans JP';
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+#settings.display {
+    display: block;
+}
+#coloring_select {
+    font-size: 75%;
+    font-family: 'Noto Sans JP';
+}
+#set_closebtn {
+    position: absolute;
+    font-size: 35px;
+    right: 2rem;
+    top: 2rem;
+    cursor: pointer;
+    user-select: none;
+    transition: transform 0.25s ease-in-out 0s;
+}
+#set_closebtn:hover {
+    background-color: #80808080;
+    border-radius: 5px;
+    transform: rotate(-90deg);
+}
+.settings_table {
+    width: 100%;
+    border-spacing: 0 1rem;
+}
+.cap,.cap_left {
+    z-index: 9999999;
+}
+#error_mes {
+    background-color: #d11b61;
+    color: #ffffff;
+    position: absolute;
+    bottom: 25vh;
+    padding: 5px;
+    margin: 10px;
+    height: 2rem;
+    font-size: 1.2rem;
+    z-index: 10;
+    border-radius: 5px;
+    display: none;
+}
+#error_mes.display {
+    display: inline;
+}
+.material-symbols-outlined.ido {
+    font-size: 135%;
+    transform: translateY(0.2em);
+}
+.material-symbols-outlined.space::after {
+    content: "\00A0";
+    font-family: 'Noto Sans JP';
+}
+        </style>
+    <title>RealtimeQuakeInfo</title>
+    
+</head>
+<body>
+    <div class="container">
+        <div id="map"></div>
+    </div>
+    <div id="textcolor">
+        <div id="shindo"><p id="shindomoji"></p></div>
+        <div id="quakeinfo"></div>
+        <!--<div class="test"><h1><a href="index_2.html">能登半島震度6弱<br>テストはこちら</a></h1></div>-->
+        <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="settings_click"  data-tippy-content="設定を開く">settings</span>
+    </div>
+    <div id="clock"></div>
+    
+    <div id="yosojikan">
+        <div id="pha_con">P波<input type="text" id="pha_yosokujikan" readonly>秒</div>
+        <div id="sha_con">S波<input type="text" id="sha_yosokujikan" readonly>秒</div>
+    </div>
+    
+    <div id="settings">
+        <span class="material-symbols-outlined cap" id="set_closebtn" data-tippy-content="設定を閉じる">close</span>
+        <p style="font-family: 'Nanka Sans','Noto Sans JP';font-weight: normal;text-align: center;font-size: 2rem;margin-top: 0;" class="cap" data-tippy-content="各種設定を行います。<br>詳しくは各設定の名前の上にカーソルを移動させてください。">Settings ─ 設定</p>
+        <div id="coloring_con">
+            <table class="settings_table">
+                <tr id="set_haishoku">
+                    <td style="width: 50%;" align="center" class="cap" data-tippy-content="震度配色の色を決定します。"><label for="coloring_select">配色テーマ</label></td>
+                    <td style="width: 50%;">
+                        <select id="coloring_select" style="width: 90%;">
+                            <option value="JQuake" selected>JQuake(標準)</option>
+                            <option value="Quarog">Quarog</option>
+                            <option value="気象庁">気象庁</option>
+                            <option value="NHK">NHK</option>
+                            <option value="KiwiMonitor 第2版">KiwiMonitor 第2版</option>
+                            <option value="YDITS">YDITS震度配色</option>
+                            <option value="カラフル1">カラフル1</option>
+                            <option value="ビビット">ビビット</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="set_chienoffset">
+                    <td align="center" class="cap" data-tippy-content="地震情報を確実に取得するため、実際の時間から遅延させて取得するための設定です。<br>規定値は、2秒です。<br>これを2秒未満にすると取得エラーが発生する場合があります。">遅延オフセット</td>
+                    <td><input type="number" id="TimeApi_offset" style="font-size: 75%;" min="0">秒</td>
+                </tr>
+                <tr id="set_replay">
+                    <td align="center" class="set_replay_td1_tippy" data-tippy-content='<span style="font-size: 130%;font-weight: bold;color: red;">未来の日付・時刻を入力しないでください！</span><br>過去に発生した地震をリプレイで確認します。<br>現在の時刻に戻す場合、リプレイ停止を押してください。'>リプレイ</td>
+                    <td><input type="date" id="set_replay_date" style="font-size: 75%;" class="cap" data-tippy-content="リプレイを開始する日付を入力してください。"><input type="time" id="set_replay_time" step="1" style="font-size: 75%;" class="cap" data-tippy-content="リプレイを開始する時刻を入力してください。"><br><button style="font-size: 75%;" id="set_replay_start" class="cap" data-tippy-content="上の日付・時刻からリプレイを開始します。">リプレイ開始</button>　<button style="font-size: 75%;" id="set_replay_reset" class="cap" data-tippy-content="リプレイを停止し、現在の時刻に戻します。">リプレイ停止</button></td>
+                </tr>
+            </table>
+            
+        </div>
+    </div>
+    <span style="position: absolute;top: 10px;left: 10px;background-color: #ffffff;font-size: 1.2rem;color: #000000;border-radius: 5px;z-index: 500;padding: 5px;font-weight: 400;">お知らせ：時間の取得をAPIに変えてみました。</span>
+    <span id="error_mes"></span>
+
+    <script>
+    tippy('.cap', {//指定した要素にツールチップが出現
+        placement: 'top',//ツールチップの表示位置⇒top、top-start、top-end、right、right-start、right-end、bottom、bottom-start、bottom-end、left、left-start、left-end。指定をしなくてもtopに表示
+        animation: 'perspective',//ツールチップ出現の動き。動きを指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/animations/から任意の動きを選び内に読み込むことが必要。使用できる動き⇒shift-away、shift-away-subtle、shift-away-extreme、shift-toward、shift-toward-subtle、shift-toward-extreme、scale、scale-subtle、scale-extreme、perspective、perspective-subtle、perspective-extreme。指定をしなくてもfadeで表示
+        theme: '',//ツールチップのテーマの色。色を指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/themes/からテーマを選び内に読み込んで指定する。テーマの種類⇒light、light-border、material、translucent。指定をしなくても黒色で表示
+        duration: 200,
+        allowHTML: true,
+    });
+    /*tippy('.', {//指定した要素にツールチップが出現
+        content: '再読み込みしてください。<br><span class="material-symbols-outlined ido">settings</span>設定の「遅延オフセット」を2秒以上に調節してから、<br>左上の<span class="material-symbols-outlined ido">refresh</span>更新ボタン、または、<span class="material-symbols-outlined ido">keyboard</span>F5キー、で再読み込みしてください。',
+        placement: 'top',//ツールチップの表示位置⇒top、top-start、top-end、right、right-start、right-end、bottom、bottom-start、bottom-end、left、left-start、left-end。指定をしなくてもtopに表示
+        animation: 'perspective',//ツールチップ出現の動き。動きを指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/animations/から任意の動きを選び内に読み込むことが必要。使用できる動き⇒shift-away、shift-away-subtle、shift-away-extreme、shift-toward、shift-toward-subtle、shift-toward-extreme、scale、scale-subtle、scale-extreme、perspective、perspective-subtle、perspective-extreme。指定をしなくてもfadeで表示
+        theme: '',//ツールチップのテーマの色。色を指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/themes/からテーマを選び内に読み込んで指定する。テーマの種類⇒light、light-border、material、translucent。指定をしなくても黒色で表示
+        duration: 200,
+        allowHTML: true,
+    });*/
+    tippy('.delaytimetippy', {//指定した要素にツールチップが出現
+        content: '再読み込みしてください。<br><span class="material-symbols-outlined ido">settings</span>設定の「遅延オフセット」を2秒以上に調節してから、<br>左上の<span class="material-symbols-outlined ido">refresh</span>更新ボタン、または、<span class="material-symbols-outlined ido">keyboard</span>F5キー、で再読み込みしてください。',
+        placement: 'top',//ツールチップの表示位置⇒top、top-start、top-end、right、right-start、right-end、bottom、bottom-start、bottom-end、left、left-start、left-end。指定をしなくてもtopに表示
+        animation: 'perspective',//ツールチップ出現の動き。動きを指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/animations/から任意の動きを選び内に読み込むことが必要。使用できる動き⇒shift-away、shift-away-subtle、shift-away-extreme、shift-toward、shift-toward-subtle、shift-toward-extreme、scale、scale-subtle、scale-extreme、perspective、perspective-subtle、perspective-extreme。指定をしなくてもfadeで表示
+        theme: '',//ツールチップのテーマの色。色を指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/themes/からテーマを選び内に読み込んで指定する。テーマの種類⇒light、light-border、material、translucent。指定をしなくても黒色で表示
+        duration: 200,
+        allowHTML: true,
+    });
+    function reload() {
+        window.reload();
+    }
+    </script>
+    <script>
+    var map = L.map('map', {
+    center: [37.575, 135.984],
+    zoom: 5,
+});
+map.zoomControl.setPosition('topright');
+L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+//L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+    {
+        attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+//p波マーカー初期化
+var pwave = L.circle([0, 0], {
+    radius: 0,
+    color: 'blue',
+    fillColor: '#399ade',
+    fillOpacity: 0.25,
+}).addTo(map);
+
+//s波マーカー初期化
+var swave = L.circle([0, 0], {
+    radius: 0,
+    color: '#dc143c',
+    fillColor: '#dc143c',
+    fillOpacity: 0.15,
+}).addTo(map);
+
+let settings_click = document.getElementById('settings_click');
+let settings = document.getElementById('settings');
+let set_closebtn = document.getElementById('set_closebtn');
+var set_replay_date = document.getElementById('set_replay_date');
+var set_replay_time = document.getElementById('set_replay_time');
+var set_replay_start = document.getElementById('set_replay_start');
+var set_replay_reset = document.getElementById('set_replay_reset');
+var replay_true;
+
+settings_click.addEventListener("click",()=>{
+    settings.classList.add('display');
+});
+set_closebtn.addEventListener("click",()=>{
+    settings.classList.remove('display');
+});
+set_replay_start.addEventListener("click",()=>{
+    if (set_replay_date.value != '' && set_replay_time.value != ''){
+       Cookies.set('replay_true','true');
+    }
+});
+set_replay_reset.addEventListener("click",()=>{
+    Cookies.set('replay_true','false');
+    Cookies.remove('replay_datetime');
+    Cookies.remove('replay_first');
+});
+
+var TimeApi_offset = document.getElementById('TimeApi_offset');
+if (localStorage.getItem('quake_TimeApiDelay') == null) {
+    var TimeApiDelay = 2;
+    TimeApi_offset.value = TimeApiDelay;
+    localStorage.setItem('quake_TimeApiDelay',TimeApiDelay)
+} else {
+    var TimeApiDelay = localStorage.getItem('quake_TimeApiDelay');
+    TimeApi_offset.value = TimeApiDelay;
+}
+TimeApi_offset.addEventListener("input",()=>{
+    localStorage.setItem('quake_TimeApiDelay',TimeApi_offset.value);
+    TimeApiDelay = TimeApi_offset.value;
+});
+
+
+Cookies.remove('sudenizumu');
+Cookies.remove('firstse');
+Cookies.remove('lnglat');
+Cookies.remove('replay_true');
+Cookies.remove('replay_datetime');
+Cookies.remove('replay_first');
+    $(function () {
+        if (localStorage.getItem('quake_lathome') == null || localStorage.getItem('quake_lnghome') == null) {
+            const ipinfo = fetch('https://ipinfo.io?callback')
+            .then(ipinfo => ipinfo.json())
+            .then(ipinfo => {
+                var home_kari = ipinfo['loc'];
+                let home_kari_retsu = home_kari.split(',');
+                localStorage.setItem('quake_lathome',home_kari_retsu[0]);
+                localStorage.setItem('quake_lnghome',home_kari_retsu[1]);
+                setTimeout(() => {location.reload();} ,100);
+            });
+        }
+            var shindo = document.getElementById('shindo');
+            var shindomoji = document.getElementById('shindomoji');
+            var yosojikan = document.getElementById('yosojikan');
+            var quakeinfo = document.getElementById('quakeinfo');
+            var coloring_select = document.getElementById('coloring_select');
+            var coloring_select_by = document.getElementById('coloring_select_by');
+            var textcolor = document.getElementById('textcolor');
+            let coloring_select_by_info = ['by フランソワさん','by Fukuさん','by 気象庁','by NHK','by こんぽさん','by よねさん','by りょーりょーさん','by ingenさん'];
+
+            
+                coloring_select.addEventListener("change",()=>{
+                    localStorage.setItem('quake_coloring',coloring_select.value);
+                });
+                if (localStorage.getItem('quake_coloring') == 'JQuake' || localStorage.getItem('quake_coloring') == null) {coloring_select.options[0].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'Quarog'){coloring_select.options[1].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == '気象庁'){coloring_select.options[2].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'NHK'){coloring_select.options[3].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'KiwiMonitor 第2版'){coloring_select.options[4].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'YDITS'){coloring_select.options[5].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'カラフル1'){coloring_select.options[6].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'ビビット'){coloring_select.options[7].selected = true;
+                }
+
+            setInterval(() => {
+                var timejson = $.getJSON('http://worldtimeapi.org/api/timezone/Asia/Tokyo');
+                $.when(timejson)
+                .done(function (timeapi) {
+                    if (Cookies.get('replay_true') == 'true') {
+                        if (Cookies.get('replay_first') == 'no'){
+                            let ichiji_replay_daytime = Cookies.get('replay_datetime');
+                            let date = new Date(ichiji_replay_daytime.substring(0,4),(Number(ichiji_replay_daytime.substring(4,6)) - 1),ichiji_replay_daytime.substring(6,8),ichiji_replay_daytime.substring(8,10),ichiji_replay_daytime.substring(10,12),ichiji_replay_daytime.substring(12,14));
+                            date.setSeconds(date.getSeconds() + 1);
+                            var year = date.getFullYear();
+                            var month = ('0'+ (date.getMonth() + 1)).slice(-2);
+                            var day = ('0'+ date.getDate()).slice(-2);
+                            var hour = ('0'+ date.getHours()).slice(-2);
+                            var minute = ('0'+ date.getMinutes()).slice(-2);
+                            var second = ('0'+ date.getSeconds()).slice(-2);
+                            Cookies.set('replay_datetime',year+""+month+""+day+""+hour+""+minute+""+second);
+                            document.getElementById('clock').style.backgroundColor = "#6e004d";
+                            document.getElementById('clock').style.color = "#ffffff";
+                        } else {
+                            let ichiji_replay_daytime_2 = set_replay_date.value.substring(0,4) + set_replay_date.value.substring(5,7) + set_replay_date.value.substring(8,10) + set_replay_time.value.substring(0,2) + set_replay_time.value.substring(3,5) +set_replay_time.value.substring(6,8);
+                            var year = ichiji_replay_daytime_2.substring(0,4);
+                            var month = ichiji_replay_daytime_2.substring(4,6);
+                            var day = ichiji_replay_daytime_2.substring(6,8);
+                            var hour = ichiji_replay_daytime_2.substring(8,10);
+                            var minute = ichiji_replay_daytime_2.substring(10,12);
+                            var second = ichiji_replay_daytime_2.substring(12,14);
+                            console.log(year+month+day+hour+minute+second);
+                            Cookies.set('replay_first','no');
+                            Cookies.set('replay_datetime',year+month+day+hour+minute+second);
+                            document.getElementById('clock').style.backgroundColor = "#6e004d";
+                            document.getElementById('clock').style.color = "#ffffff";
+                        }
+                    } else {
+                        if (window.location.search.indexOf('replay_daytime') != -1) {
+                            var replay_daytime = getParam('replay_daytime');
+                            if (replay_daytime.length == 14) {
+                                var year = replay_daytime.substring(0,4);
+                                var month = replay_daytime.substring(4,6);
+                                var day = replay_daytime.substring(6,8);
+                                var hour = replay_daytime.substring(8,10);
+                                var minute = replay_daytime.substring(10,12);
+                                var second = replay_daytime.substring(12,14);
+                                Cookies.set('replay_true','true');
+                                Cookies.set('replay_datetime',replay_daytime);
+                                Cookies.set('replay_first','no');
+                                return;
+                            }
+                        }
+                        document.getElementById('clock').style.backgroundColor = "#ffffff";
+                        document.getElementById('clock').style.color = "#000000";
+                        var year = timeapi["datetime"].substring(0,4);
+                        var month = timeapi["datetime"].substring(5,7);
+                        var day = timeapi["datetime"].substring(8,10);
+                        var hour = timeapi["datetime"].substring(11,13);
+                        var minute = timeapi["datetime"].substring(14,16);
+                        var second = timeapi["datetime"].substring(17,19);
+                        var date = new Date(year,(Number(month) - 1),day,hour,minute,second);
+                        date.setSeconds(date.getSeconds() - TimeApiDelay);
+                        var year = date.getFullYear();
+                        var month = ('0'+ (date.getMonth() + 1)).slice(-2);
+                        var day = ('0'+ date.getDate()).slice(-2);
+                        var hour = ('0'+ date.getHours()).slice(-2);
+                        var minute = ('0'+ date.getMinutes()).slice(-2);
+                        var second = ('0'+ date.getSeconds()).slice(-2);
+                    }
+                    document.getElementById('clock').innerText = year+'/'+month+'/'+day+' '+hour+':'+minute+':'+second;
+                    var json1 = $.getJSON('https://weather-kyoshin.west.edge.storage-yahoo.jp/RealTimeData/'+year+month+day+'/'+year+month+day+hour+minute+second+'.json');
+                    var json2 = $.getJSON('https://kyoshin.jishinalert.tech/webservice/hypo/eew/'+year+month+day+hour+minute+second+'.json');
+
+                    $.when(json1,json2)
+                    .done(function (yahoo_data, jishinalert_data) {
+                        if (yahoo_data[0]["psWave"] == null && yahoo_data[0]["hypoInfo"] == null) {
+                            map.eachLayer(function (layer) {
+                                if (layer.myTag && layer.myTag === "Shingen") {
+                                    map.removeLayer(layer)
+                                }
+                                layer = null;
+                            });
+                            //map.flyTo(new L.LatLng(37.575, 135.984), 5, { duration: 0.5 });
+                            
+                            pwave.setRadius('0');
+                            swave.setRadius('0');
+                            shindomoji.innerHTML = '';
+                            quakeinfo.innerHTML = '';
+                            document.body.style.backgroundColor = '';
+                            textcolor.style.color = '';
+                            yosojikan.style.display = 'none';
+                            Cookies.remove('sudenizumu');
+                            Cookies.remove('firstse');
+                            Cookies.remove('lnglat');
+                            document.title = 'RealtimeQuakeInfo';
+                            return;
+                        } /*else if (Cookies.get('firstse') != 'yes') {
+                            let firstse = new Audio('firstse.wav');
+                            firstse.play();
+                            Cookies.set('firstse','yes')
+                        }*/ else{
+                            var p = (yahoo_data[0]["psWave"]["items"][0]["pRadius"]) * 1000;
+                            var s = (yahoo_data[0]["psWave"]["items"][0]["sRadius"]) * 1000;
+
+                        //中心点(震源の緯度経度)を取り出す。
+                        var lat = yahoo_data[0]["psWave"]["items"][0]["latitude"].replace("N", "");
+                        //var lat = jishinalert_data[0]["latitude"];
+                        var lng = yahoo_data[0]["psWave"]["items"][0]["longitude"].replace("E", "");
+                        //var lng = jishinalert_data[0]["longitude"];
+                        var reportTime = ((yahoo_data[0]["hypoInfo"]["items"][0]["reportTime"]).replace('+09:00','')).split('T'); //発生日時
+                        var magnitude = yahoo_data[0]["hypoInfo"]["items"][0]["magnitude"]; //マグニチュード
+                        var calcintensity = yahoo_data[0]["hypoInfo"]["items"][0]["calcintensity"]; //最大震度
+                        var regionName = yahoo_data[0]["hypoInfo"]["items"][0]["regionName"]; //震源名
+                        var depth = yahoo_data[0]["hypoInfo"]["items"][0]["depth"]; //深さ
+                        var reportNum = yahoo_data[0]["hypoInfo"]["items"][0]["reportNum"]; //報数
+                        var report_id = jishinalert_data[0]["report_id"]; //レポートID（発生時刻）
+                        var isFinal = yahoo_data[0]["hypoInfo"]["items"][0]["isFinal"]; //最終報
+                        if (isFinal == 'true') {
+                            var isFinal_text = '最終報';
+                        } else {
+                            var isFinal_text = '';
+                        }
+                        var eewlevel = jishinalert_data[0]["alertflg"];
+
+                        var psCenter = new L.LatLng(lat, lng);
+
+                        if (Cookies.get('lnglat') != lat+':'+lng) {
+                            map.eachLayer(function (layer) {
+                                if (layer.myTag && layer.myTag == "Shingen") {
+                                    map.removeLayer(layer)
+                                }
+                                layer = null;
+                            });
+                        }
+
+                            document.title = '【受信中】RealtimeQuakeInfo';
+                        
+                            //s波を更新
+                            swave.setLatLng(psCenter);
+                            swave.setRadius(s);
+                            //p波を更新
+                            pwave.setLatLng(psCenter);
+                            pwave.setRadius(p);
+                            
+                            var geojsonFeature = [{
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [lng, lat]
+                                }
+                            }];
+
+                            L.geoJson(geojsonFeature[0],
+                            {
+                                onEachFeature: function (feature, layer) {
+                                    if (feature.properties && feature.properties.popupContent) {
+                                        layer.bindPopup(feature.properties.popupContent);
+                                    }
+                                    layer.myTag = "Shingen"
+                                },
+                                pointToLayer: function (feature, latlng) {
+                                    var myIcon = L.icon({
+                                        iconUrl: 'shingen.png',
+                                        iconSize: [40, 40],
+                                        popupAnchor: [0, -40]
+                                    });
+                                    return L.marker(latlng, { icon: myIcon, zIndexOffset: 100 });
+                                }
+                            
+                            }).addTo(map)
+                        
+                        }
+
+                                const R = Math.PI / 180;
+                                function distance(lat1, lng1, lat2, lng2) {
+                                lat1 *= R;lng1 *= R;lat2 *= R;lng2 *= R;
+                                return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
+                                }
+                                var lathome = localStorage.getItem('quake_lathome');
+                                var lnghome = localStorage.getItem('quake_lnghome');
+                                var ptotatsu = ((distance(lat, lng, lathome, lnghome) - p / 1000) / 8).toFixed(1);
+                                var stotatsu = ((distance(lat, lng, lathome, lnghome) - s / 1000) / 4).toFixed(1);
+                                console.log('P波到達まで：'+ptotatsu+'秒\nS波到達まで：'+stotatsu+'秒');
+                                yosojikan.style.display = 'block';
+                                document.getElementById('pha_yosokujikan').value = ptotatsu;
+                                document.getElementById('sha_yosokujikan').value = stotatsu;
+
+                        
+                            let jquake_BackColor = ["#6b7878", "#156ca5", "#139a4c", "#c99c00", "#e98226", "#d16a0e", "#eb1a00", "#9e0103", "#960096", "#408080"];
+                            let jquake_TextColor = "#ffffff";
+                            let quarog_BackColor = ["rgb(50, 90, 140)", "rgb(50, 120, 210)", "rgb(50, 210, 230)", "rgb(240, 240, 120)", "rgb(250, 180, 40)", "rgb(250, 120, 30)", "rgb(220, 30, 20)", "rgb(140, 20, 10)", "rgb(80, 10, 100)", "rgb(50, 60, 70)"];
+                            let quarog_TextColor = ["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(30, 40, 50)", "rgb(30, 40, 50)", "rgb(30, 40, 50)", "rgb(30, 40, 50)", "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"];
+                            let kishocho_BackColor = ["rgb(242,242,255)","rgb(0,170,255)","rgb(0,65,255)","rgb(250,230,150)","rgb(255,230,0)","rgb(255,153,0)","rgb(255,40,0)","rgb(165,0,33)","rgb(180 ,0 ,104 )","rgb(50, 60, 70)"];
+                            let kishocho_TextColor = ["rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(255, 255, 255)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(255, 255, 255)","rgb(255, 255, 255)","rgb(255, 255, 255)"];
+                            let nhk_BackColor = ["#51b3fc","#7dd45a","#f0de7e","#fa782c","#b30f20","#b30f20","#ffcdde","#ffcdde","#9400d3","#808080"];
+                            let nhk_TextColor = ["#000000","#000000","#000000","#000000","#ffffff","#ffffff","#b30f20","#b30f20","#ffff6c","#ffffff"];
+                            let kiwi2_BackColor = ["rgb(70, 100, 110)","rgb(30, 110, 230)","rgb(0, 200, 200)","rgb(250, 250, 100)","rgb(255, 180 ,0)","rgb(255, 120, 0)","rgb(230, 0, 0)","rgb(160, 0, 0)","rgb(150, 0, 150)","rgb(241, 241, 241)"];
+                            let kiwi2_TextColor = ["rgb(255, 255, 255)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(255, 255, 255)","rgb(255, 255, 255)","rgb(30, 40, 50)"];
+                            let ydits_BackColor = ['#bec2bd','#1e21bb','#00c123','#bbc124','#bea222','#bf8020','#c0211c','#a0221d','#7f217c','#7b80bd'];
+                            let ydits_TextColor = ['#000000','#ffffff','#000000','#000000','#000000','#000000','#ffffff','#ffffff','#ffffff','#000000'];
+                            let colorful1_BackColor = ["rgb(0, 50, 165)","rgb(0, 124, 255)","rgb(0, 160, 130)","rgb(240, 201, 80)","rgb(249, 146, 48)","rgb(249, 99, 44)","rgb(254, 25, 32)","rgb(206, 0, 0)","rgb(109, 47, 161)","rgb(70, 80, 100)"];
+                            let colorful1_TextColor = ["rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(30, 40, 50)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)"];
+                            let vivid_BackColor = ["#FFFAFA","#1E90FF","#3CB371","#DAA520","#FF8C00","#FF8C00","#DC143C","#DC143C","#FF1493","#808080"];
+                            let vivid_TextColor = ["#808080","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff"];
+                            if (localStorage.getItem('quake_coloring') == 'JQuake' || localStorage.getItem('quake_coloring') == null) {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = jquake_BackColor[0];TextColor = jquake_TextColor;} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = jquake_BackColor[1]; TextColor = jquake_TextColor;} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = jquake_BackColor[2]; TextColor = jquake_TextColor;} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = jquake_BackColor[3]; TextColor = jquake_TextColor;} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = jquake_BackColor[4]; TextColor = jquake_TextColor;} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = jquake_BackColor[5]; TextColor = jquake_TextColor;} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = jquake_BackColor[6]; TextColor = jquake_TextColor;} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = jquake_BackColor[7]; TextColor = jquake_TextColor;} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = jquake_BackColor[8]; TextColor = jquake_TextColor;} else {MaxShindo = '不明'; BackColor = jquake_BackColor[9]; TextColor = jquake_TextColor;}
+                            } else if (localStorage.getItem('quake_coloring') == 'Quarog') {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = quarog_BackColor[0];TextColor = quarog_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = quarog_BackColor[1]; TextColor = quarog_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = quarog_BackColor[2]; TextColor = quarog_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = quarog_BackColor[3]; TextColor = quarog_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = quarog_BackColor[4]; TextColor = quarog_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = quarog_BackColor[5]; TextColor = quarog_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = quarog_BackColor[6]; TextColor = quarog_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = quarog_BackColor[7]; TextColor = quarog_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = quarog_BackColor[8]; TextColor = quarog_TextColor[8];} else {MaxShindo = '不明'; BackColor = quarog_BackColor[9]; TextColor = quarog_TextColor[9];}
+                            } else if (localStorage.getItem('quake_coloring') == '気象庁') {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = kishocho_BackColor[0];TextColor = kishocho_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = kishocho_BackColor[1]; TextColor = kishocho_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = kishocho_BackColor[2]; TextColor = kishocho_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = kishocho_BackColor[3]; TextColor = kishocho_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = kishocho_BackColor[4]; TextColor = kishocho_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = kishocho_BackColor[5]; TextColor = kishocho_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = kishocho_BackColor[6]; TextColor = kishocho_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = kishocho_BackColor[7]; TextColor = kishocho_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = kishocho_BackColor[8]; TextColor = kishocho_TextColor[8];} else {MaxShindo = '不明'; BackColor = kishocho_BackColor[9]; TextColor = kishocho_TextColor[9];}
+                            } else if (localStorage.getItem('quake_coloring') == 'NHK') {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = nhk_BackColor[0];TextColor = nhk_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = nhk_BackColor[1]; TextColor = nhk_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = nhk_BackColor[2]; TextColor = nhk_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = nhk_BackColor[3]; TextColor = nhk_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = nhk_BackColor[4]; TextColor = nhk_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = nhk_BackColor[5]; TextColor = nhk_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = nhk_BackColor[6]; TextColor = nhk_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = nhk_BackColor[7]; TextColor = nhk_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = nhk_BackColor[8]; TextColor = nhk_TextColor[8];} else {MaxShindo = '不明'; BackColor = nhk_BackColor[9]; TextColor = nhk_TextColor[9];}
+                            } else if (localStorage.getItem('quake_coloring') == 'KiwiMonitor 第2版') {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = kiwi2_BackColor[0];TextColor = kiwi2_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = kiwi2_BackColor[1]; TextColor = kiwi2_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = kiwi2_BackColor[2]; TextColor = kiwi2_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = kiwi2_BackColor[3]; TextColor = kiwi2_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = kiwi2_BackColor[4]; TextColor = kiwi2_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = kiwi2_BackColor[5]; TextColor = kiwi2_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = kiwi2_BackColor[6]; TextColor = kiwi2_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = kiwi2_BackColor[7]; TextColor = kiwi2_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = kiwi2_BackColor[8]; TextColor = kiwi2_TextColor[8];} else {MaxShindo = '不明'; BackColor = kiwi2_BackColor[9]; TextColor = kiwi2_TextColor[9];}
+                            } else if (localStorage.getItem('quake_coloring') == 'YDITS') {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = ydits_BackColor[0];TextColor = ydits_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = ydits_BackColor[1]; TextColor = ydits_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = ydits_BackColor[2]; TextColor = ydits_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = ydits_BackColor[3]; TextColor = ydits_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = ydits_BackColor[4]; TextColor = ydits_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = ydits_BackColor[5]; TextColor = ydits_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = ydits_BackColor[6]; TextColor = ydits_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = ydits_BackColor[7]; TextColor = ydits_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = ydits_BackColor[8]; TextColor = ydits_TextColor[8];} else {MaxShindo = '不明'; BackColor = ydits_BackColor[9]; TextColor = ydits_TextColor[9];}
+                            } else if (localStorage.getItem('quake_coloring') == 'カラフル1') {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = colorful1_BackColor[0];TextColor = colorful1_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = colorful1_BackColor[1]; TextColor = colorful1_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = colorful1_BackColor[2]; TextColor = colorful1_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = colorful1_BackColor[3]; TextColor = colorful1_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = colorful1_BackColor[4]; TextColor = colorful1_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = colorful1_BackColor[5]; TextColor = colorful1_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = colorful1_BackColor[6]; TextColor = colorful1_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = colorful1_BackColor[7]; TextColor = colorful1_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = colorful1_BackColor[8]; TextColor = colorful1_TextColor[8];} else {MaxShindo = '不明'; BackColor = colorful1_BackColor[9]; TextColor = colorful1_TextColor[9];}
+                            } else if (localStorage.getItem('quake_coloring') == 'ビビット') {
+                                if (calcintensity == '01') {MaxShindo = '1';BackColor = vivid_BackColor[0];TextColor = vivid_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = vivid_BackColor[1]; TextColor = vivid_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = vivid_BackColor[2]; TextColor = vivid_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = vivid_BackColor[3]; TextColor = vivid_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = vivid_BackColor[4]; TextColor = vivid_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = vivid_BackColor[5]; TextColor = vivid_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = vivid_BackColor[6]; TextColor = vivid_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = vivid_BackColor[7]; TextColor = vivid_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = vivid_BackColor[8]; TextColor = vivid_TextColor[8];} else {MaxShindo = '不明'; BackColor = vivid_BackColor[9]; TextColor = vivid_TextColor[9];}
+                            }
+
+                            var hasseijikoku = report_id.substring(0, 4)+'/'+report_id.substring(4, 6)+'/'+report_id.substring(6, 8)+' '+report_id.substring(8, 10)+':'+report_id.substring(10,12)+':'+report_id.substring(12,14);
+                            shindomoji.innerHTML = '<span style="font-size: min(6vh,calc(13vw/6));line-height: 1.1em;">最大震度</span><br><span style="font-size: min(15vh,17vw/2);line-height: 1.1em;font-weight: bold;">'+MaxShindo+'</span>';
+                            quakeinfo.innerHTML = '<span style="font-size: 5.5vh;font-weight: 500;">'+regionName+'</span><br><span style="font-size: calc(10vh / 3);">'+hasseijikoku+'<br>規模 : M'+magnitude+'　深さ'+depth+'<br>緊急地震速報（'+eewlevel+'）　'+isFinal_text+'第 '+reportNum+' 報';
+                            document.body.style.backgroundColor = BackColor;
+                            textcolor.style.color = TextColor;
+
+                            Cookies.set('lnglat',(lng+':'+lat));
+
+                            if (Cookies.get('sudenizumu') != 'yes') {
+                                if (magnitude < 5) {
+                                    Cookies.set('sudenizumu','yes');
+                                    map.flyTo(psCenter, magnitude * 1.5, { duration: 0.5 });
+                                } else {
+                                    Cookies.set('sudenizumu','yes');
+                                    map.flyTo(psCenter, parseInt(magnitude) , { duration: 0.5 });
+                                }
+                            }
+                        
+                    })
+                    .fail(function() {
+                        if (Cookies.get('replay_true') == "true") {
+                            document.getElementById('error_mes').innerHTML = '<span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">history_toggle_off</span>リプレイの時刻設定が未来です。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span>';
+                            document.getElementById('error_mes').classList.add('display');
+                            document.getElementById('error_mes').classList.add('replaytippy');
+                            settings_click.style.backgroundColor = "#ff0000";
+                            settings_click.style.color = "#ffffff";
+                            document.getElementById('set_replay').style.color = "#ffffff";
+                            document.getElementById('set_replay').style.backgroundColor = "#ff0000";
+                        } else {
+                            document.getElementById('error_mes').innerHTML = '<span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">description</span>地震情報の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span>';
+                            document.getElementById('error_mes').classList.add('display');
+                            document.getElementById('error_mes').classList.add('delaytimetippy');
+                            settings_click.style.backgroundColor = "#ff0000";
+                            settings_click.style.color = "#ffffff";
+                            document.getElementById('set_chienoffset').style.color = "#ffffff";
+                            document.getElementById('set_chienoffset').style.backgroundColor = "#ff0000";
+                        }
+                    });
+                    
+                })
+                .fail(function() {
+                    document.getElementById('error_mes').innerHTML = '<span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">schedule</span>時刻の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span>';
+                    document.getElementById('error_mes').classList.add('display');
+                    document.getElementById('error_mes').classList.add('delaytimetippy');
+                });
+
+            }, 1000);
+
+        
+    });
+
+function getParam(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+</script>
+</body>
+</html>
