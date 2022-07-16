@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <title>RealtimeQuakeInfo</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9SL593EYR6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        gtag('config', 'G-9SL593EYR6');
+    </script>
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet-src.js" integrity="sha512-Uj3ED3j6dg1xxMgtj4kF4W60Tc1HGboQ5gweT+hG1z8sBIc0ncFuoh3qV5XZF8ZqlEGlV9mt9E6MZhLN3zFDJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+        <style>
+            body {
+                overflow-y: hidden;
+                font-family: 'Noto Sans JP', sans-serif;
+            }
+            #map {
+    bottom: 25vh;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+#shindo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 25vh;
+    width: 15vw;
+}
+#shindomoji {
+    margin: 0;
+    text-align: center;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#clock {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 2rem;
+    background-color: #ffffff;
+    padding: 0 5px;
+}
+#homeinput {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 80%;
+    height: 80%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    z-index: 5555;
+    display: none;
+    padding: 10px;
+}
+#naka {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#quakeinfo {
+    position: absolute;
+    bottom: 0;
+    left: 15vw;
+    width: 50%;
+    height: 25vh;
+    z-index: 5000;
+    padding-left: 10px;
+}
+#yosojikan {
+    display: none;
+    height: 15vh;
+    width: fit-content;
+    position: absolute;
+    bottom: 25vh;
+    left: 0;
+    z-index: 1000;
+}
+#pha_con,#sha_con {
+    height: 50%;
+    width: 100%;
+    font-size: 6vh;
+    line-height: 1em;
+    color: #ffffff;
+    padding: 0 5px;
+}
+#pha_con input,#sha_con input {
+    background: none;
+    outline: none;
+    border: none;
+    font-size: 6vh;
+    width: 3em;
+    height: 1em;
+    color: #ffffff;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+#pha_con {
+    background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgba(138,153,204,1) 50%, rgba(0,44,200,1) 100%);
+}
+#sha_con {
+    background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgba(205,139,139,1) 50%, rgba(200,0,0,1) 100%);
+}
+#coloring_con {
+    position: absolute;
+    top: 75vh;
+    right: 0;
+}
+        </style>
+    <title>Document</title>
+    
+</head>
+<body>
+    <div class="container">
+        <div id="map"></div>
+    </div>
+    <div id="textcolor">
+        <div id="shindo"><p id="shindomoji"></p></div>
+        <div id="quakeinfo"></div>
+        <!--<div class="test"><h1><a href="index_2.html">能登半島震度6弱<br>テストはこちら</a></h1></div>-->
+    </div>
+    <div id="clock"></div>
+    <div id="coloring_con">
+        <label for="coloring_select">配色テーマ</label>
+        <select id="coloring_select">
+            <option value="JQuake" selected>JQuake(標準)</option>
+            <option value="Quarog">Quarog</option>
+            <option value="気象庁">気象庁</option>
+            <option value="NHK">NHK</option>
+            <option value="KiwiMonitor 第2版">KiwiMonitor 第2版</option>
+            <option value="YDITS">YDITS震度配色 by よね/Yone</option>
+            <option value="カラフル1">カラフル1 by りょー りょー</option>
+            <option value="ビビット">ビビット</option>
+        </select>
+    </div>
+    <div id="yosojikan">
+        <div id="pha_con">P波<input type="text" id="pha_yosokujikan" readonly>秒</div>
+        <div id="sha_con">S波<input type="text" id="sha_yosokujikan" readonly>秒</div>
+    </div>
+    <script>
+    var map = L.map('map', {
+    center: [37.575, 135.984],
+    zoom: 5,
+});
+map.zoomControl.setPosition('topright');
+L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+//L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+    {
+        attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+//p波マーカー初期化
+var pwave = L.circle([0, 0], {
+    radius: 0,
+    color: 'blue',
+    fillColor: '#399ade',
+    fillOpacity: 0.25,
+}).addTo(map);
+
+//s波マーカー初期化
+var swave = L.circle([0, 0], {
+    radius: 0,
+    color: '#dc143c',
+    fillColor: '#dc143c',
+    fillOpacity: 0.15,
+}).addTo(map);
+
+Cookies.remove('sudenizumu');
+Cookies.remove('firstse');
+Cookies.remove('lnglat');
+    $(function () {
+        if (localStorage.getItem('quake_lathome') == null || localStorage.getItem('quake_lnghome') == null) {
+            const ipinfo = fetch('https://ipinfo.io?callback')
+            .then(ipinfo => ipinfo.json())
+            .then(ipinfo => {
+                var home_kari = ipinfo['loc'];
+                let home_kari_retsu = home_kari.split(',');
+                localStorage.setItem('quake_lathome',home_kari_retsu[0]);
+                localStorage.setItem('quake_lnghome',home_kari_retsu[1]);
+                setTimeout(() => {location.reload();} ,100);
+            });
+        }
+        
+            var shindo = document.getElementById('shindo');
+            var shindomoji = document.getElementById('shindomoji');
+            var yosojikan = document.getElementById('yosojikan');
+            var quakeinfo = document.getElementById('quakeinfo');
+            var coloring_select = document.getElementById('coloring_select');
+            var textcolor = document.getElementById('textcolor');
+
+            
+                coloring_select.addEventListener("change",()=>{
+                        localStorage.setItem('quake_coloring',coloring_select.value);
+                });
+                if (localStorage.getItem('quake_coloring') == 'JQuake' || localStorage.getItem('quake_coloring') == null) {
+                    coloring_select.options[0].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'Quarog'){
+                    coloring_select.options[1].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == '気象庁'){
+                    coloring_select.options[2].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'NHK'){
+                    coloring_select.options[3].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'KiwiMonitor 第2版'){
+                    coloring_select.options[4].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'YDITS'){
+                    coloring_select.options[5].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'カラフル1'){
+                    coloring_select.options[7].selected = true;
+                } else if(localStorage.getItem('quake_coloring') == 'ビビット'){
+                    coloring_select.options[8].selected = true;
+                }
+
+            var hiduke = new Date(2022,05,19,15,08,13);
+            setInterval(() => {
+                //var hiduke = new Date();
+                //hiduke.setSeconds(hiduke.getSeconds() - 2);
+                hiduke.setSeconds(hiduke.getSeconds() + 1);
+                var year = hiduke.getFullYear();
+                var month = ('0'+ (hiduke.getMonth() + 1)).slice(-2);
+                var date = ('0'+ hiduke.getDate()).slice(-2);
+                var hour = ('0'+ hiduke.getHours()).slice(-2);
+                var minute = ('0'+ hiduke.getMinutes()).slice(-2);
+                var second = ('0'+ hiduke.getSeconds()).slice(-2);
+                document.getElementById('clock').innerText = year+'/'+month+'/'+date+' '+hour+':'+minute+':'+second;
+
+
+                var json1 = $.getJSON('https://weather-kyoshin.west.edge.storage-yahoo.jp/RealTimeData/'+year+month+date+'/'+year+month+date+hour+minute+second+'.json');
+                var json2 = $.getJSON('https://kyoshin.jishinalert.tech/webservice/hypo/eew/'+year+month+date+hour+minute+second+'.json');
+
+                $.when(json1,json2)
+                .done(function (yahoo_data, jishinalert_data) {
+                    if (yahoo_data[0]["psWave"] == null && yahoo_data[0]["hypoInfo"] == null) {
+                        map.eachLayer(function (layer) {
+                            if (layer.myTag && layer.myTag === "Shingen") {
+                                map.removeLayer(layer)
+                            }
+                            layer = null;
+                        });
+                        //map.flyTo(new L.LatLng(37.575, 135.984), 5, { duration: 0.5 });
+                        
+                        pwave.setRadius('0');
+                        swave.setRadius('0');
+                        shindomoji.innerHTML = '';
+                        quakeinfo.innerHTML = '';
+                        document.body.style.backgroundColor = '';
+                        textcolor.style.color = '';
+                        yosojikan.style.display = 'none';
+                        Cookies.remove('sudenizumu');
+                        Cookies.remove('firstse');
+                        Cookies.remove('lnglat');
+                        document.title = 'RealtimeQuakeInfo';
+                        return;
+                    } /*else if (Cookies.get('firstse') != 'yes') {
+                        let firstse = new Audio('firstse.wav');
+                        firstse.play();
+                        Cookies.set('firstse','yes')
+                    }*/ else{
+                        var p = (yahoo_data[0]["psWave"]["items"][0]["pRadius"]) * 1000;
+                        var s = (yahoo_data[0]["psWave"]["items"][0]["sRadius"]) * 1000;
+
+                    //中心点(震源の緯度経度)を取り出す。
+                    var lat = yahoo_data[0]["psWave"]["items"][0]["latitude"].replace("N", "");
+                    //var lat = jishinalert_data[0]["latitude"];
+                    var lng = yahoo_data[0]["psWave"]["items"][0]["longitude"].replace("E", "");
+                    //var lng = jishinalert_data[0]["longitude"];
+                    var reportTime = ((yahoo_data[0]["hypoInfo"]["items"][0]["reportTime"]).replace('+09:00','')).split('T'); //発生日時
+                    var magnitude = yahoo_data[0]["hypoInfo"]["items"][0]["magnitude"]; //マグニチュード
+                    var calcintensity = yahoo_data[0]["hypoInfo"]["items"][0]["calcintensity"]; //最大震度
+                    var regionName = yahoo_data[0]["hypoInfo"]["items"][0]["regionName"]; //震源名
+                    var depth = yahoo_data[0]["hypoInfo"]["items"][0]["depth"]; //深さ
+                    var reportNum = yahoo_data[0]["hypoInfo"]["items"][0]["reportNum"]; //報数
+                    var report_id = jishinalert_data[0]["report_id"]; //レポートID（発生時刻）
+                    var isFinal = yahoo_data[0]["hypoInfo"]["items"][0]["isFinal"]; //最終報
+                    if (isFinal == 'true') {
+                        var isFinal_text = '最終報';
+                    } else {
+                        var isFinal_text = '';
+                    }
+                    var eewlevel = jishinalert_data[0]["alertflg"];
+
+                    var psCenter = new L.LatLng(lat, lng);
+                    console.log(lat+','+lng);
+
+                    if (Cookies.get('lnglat') != lat+':'+lng) {
+                        map.eachLayer(function (layer) {
+                            if (layer.myTag && layer.myTag == "Shingen") {
+                                map.removeLayer(layer)
+                            }
+                            layer = null;
+                        });
+                    }
+
+                        document.title = '【受信中】RealtimeQuakeInfo';
+
+                        //s波を更新
+                        swave.setLatLng(psCenter);
+                        swave.setRadius(s);
+                        //p波を更新
+                        pwave.setLatLng(psCenter);
+                        pwave.setRadius(p);
+                        
+                        
+                        var geojsonFeature = [{
+                            "type": "Feature",
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [lng, lat]
+                            }
+                        }];
+
+                        L.geoJson(geojsonFeature[0],
+                        {
+                            onEachFeature: function (feature, layer) {
+                                if (feature.properties && feature.properties.popupContent) {
+                                    layer.bindPopup(feature.properties.popupContent);
+                                }
+                                layer.myTag = "Shingen"
+                            },
+                            pointToLayer: function (feature, latlng) {
+                                var myIcon = L.icon({
+                                    iconUrl: 'shingen.png',
+                                    iconSize: [40, 40],
+                                    popupAnchor: [0, -40]
+                                });
+                                return L.marker(latlng, { icon: myIcon, zIndexOffset: 100 });
+                            }
+                        
+                        }).addTo(map)
+                    
+                    }
+
+                            const R = Math.PI / 180;
+                            function distance(lat1, lng1, lat2, lng2) {
+                            lat1 *= R;
+                            lng1 *= R;
+                            lat2 *= R;
+                            lng2 *= R;
+                            return 6371 * Math.acos(Math.cos(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1) + Math.sin(lat1) * Math.sin(lat2));
+                            }
+                            var lathome = localStorage.getItem('quake_lathome');
+                            var lnghome = localStorage.getItem('quake_lnghome');
+                            var ptotatsu = ((distance(lat, lng, lathome, lnghome) - p / 1000) / 8).toFixed(1);
+                            var stotatsu = ((distance(lat, lng, lathome, lnghome) - s / 1000) / 4).toFixed(1);
+                            console.log('P波到達まで：'+ptotatsu+'秒\nS波到達まで：'+stotatsu+'秒');
+                            yosojikan.style.display = 'block';
+                            document.getElementById('pha_yosokujikan').value = ptotatsu;
+                            document.getElementById('sha_yosokujikan').value = stotatsu;
+
+                    
+                        let jquake_BackColor = ["#6b7878", "#156ca5", "#139a4c", "#c99c00", "#e98226", "#d16a0e", "#eb1a00", "#9e0103", "#960096", "#408080"];
+                        let jquake_TextColor = "#ffffff";
+                        let quarog_BackColor = ["rgb(50, 90, 140)", "rgb(50, 120, 210)", "rgb(50, 210, 230)", "rgb(240, 240, 120)", "rgb(250, 180, 40)", "rgb(250, 120, 30)", "rgb(220, 30, 20)", "rgb(140, 20, 10)", "rgb(80, 10, 100)", "rgb(50, 60, 70)"];
+                        let quarog_TextColor = ["rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(30, 40, 50)", "rgb(30, 40, 50)", "rgb(30, 40, 50)", "rgb(30, 40, 50)", "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)", "rgb(255, 255, 255)"];
+                        let kishocho_BackColor = ["rgb(242,242,255)","rgb(0,170,255)","rgb(0,65,255)","rgb(250,230,150)","rgb(255,230,0)","rgb(255,153,0)","rgb(255,40,0)","rgb(165,0,33)","rgb(180 ,0 ,104 )","rgb(50, 60, 70)"];
+                        let kishocho_TextColor = ["rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(255, 255, 255)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(255, 255, 255)","rgb(255, 255, 255)","rgb(255, 255, 255)"];
+                        let nhk_BackColor = ["#51b3fc","#7dd45a","#f0de7e","#fa782c","#b30f20","#b30f20","#ffcdde","#ffcdde","#9400d3","#808080"];
+                        let nhk_TextColor = ["#000000","#000000","#000000","#000000","#ffffff","#ffffff","#b30f20","#b30f20","#ffff6c","#ffffff"];
+                        let kiwi2_BackColor = ["rgb(70, 100, 110)","rgb(30, 110, 230)","rgb(0, 200, 200)","rgb(250, 250, 100)","rgb(255, 180 ,0)","rgb(255, 120, 0)","rgb(230, 0, 0)","rgb(160, 0, 0)","rgb(150, 0, 150)","rgb(241, 241, 241)"];
+                        let kiwi2_TextColor = ["rgb(255, 255, 255)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(30, 40, 50)","rgb(255, 255, 255)","rgb(255, 255, 255)","rgb(30, 40, 50)"];
+                        let ydits_BackColor = ['#bec2bd','#1e21bb','#00c123','#bbc124','#bea222','#bf8020','#c0211c','#a0221d','#7f217c','#7b80bd'];
+                        let ydits_TextColor = ['#000000','#ffffff','#000000','#000000','#000000','#000000','#ffffff','#ffffff','#ffffff','#000000'];
+                        let colorful1_BackColor = ["rgb(0, 50, 165)","rgb(0, 124, 255)","rgb(0, 160, 130)","rgb(240, 201, 80)","rgb(249, 146, 48)","rgb(249, 99, 44)","rgb(254, 25, 32)","rgb(206, 0, 0)","rgb(109, 47, 161)","rgb(70, 80, 100)"];
+                        let colorful1_TextColor = ["rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(30, 40, 50)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)","rgb(241, 241, 241)"];
+                        let vivid_BackColor = ["#FFFAFA","#1E90FF","#3CB371","#DAA520","#FF8C00","#FF8C00","#DC143C","#DC143C","#FF1493","#808080"];
+                        let vivid_TextColor = ["#808080","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff","#ffffff"];
+                        if (localStorage.getItem('quake_coloring') == 'JQuake' || localStorage.getItem('quake_coloring') == null) {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = jquake_BackColor[0];TextColor = jquake_TextColor;} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = jquake_BackColor[1]; TextColor = jquake_TextColor;} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = jquake_BackColor[2]; TextColor = jquake_TextColor;} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = jquake_BackColor[3]; TextColor = jquake_TextColor;} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = jquake_BackColor[4]; TextColor = jquake_TextColor;} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = jquake_BackColor[5]; TextColor = jquake_TextColor;} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = jquake_BackColor[6]; TextColor = jquake_TextColor;} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = jquake_BackColor[7]; TextColor = jquake_TextColor;} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = jquake_BackColor[8]; TextColor = jquake_TextColor;} else {MaxShindo = '不明'; BackColor = jquake_BackColor[9]; TextColor = jquake_TextColor;}
+                        } else if (localStorage.getItem('quake_coloring') == 'Quarog') {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = quarog_BackColor[0];TextColor = quarog_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = quarog_BackColor[1]; TextColor = quarog_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = quarog_BackColor[2]; TextColor = quarog_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = quarog_BackColor[3]; TextColor = quarog_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = quarog_BackColor[4]; TextColor = quarog_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = quarog_BackColor[5]; TextColor = quarog_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = quarog_BackColor[6]; TextColor = quarog_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = quarog_BackColor[7]; TextColor = quarog_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = quarog_BackColor[8]; TextColor = quarog_TextColor[8];} else {MaxShindo = '不明'; BackColor = quarog_BackColor[9]; TextColor = quarog_TextColor[9];}
+                        } else if (localStorage.getItem('quake_coloring') == '気象庁') {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = kishocho_BackColor[0];TextColor = kishocho_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = kishocho_BackColor[1]; TextColor = kishocho_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = kishocho_BackColor[2]; TextColor = kishocho_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = kishocho_BackColor[3]; TextColor = kishocho_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = kishocho_BackColor[4]; TextColor = kishocho_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = kishocho_BackColor[5]; TextColor = kishocho_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = kishocho_BackColor[6]; TextColor = kishocho_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = kishocho_BackColor[7]; TextColor = kishocho_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = kishocho_BackColor[8]; TextColor = kishocho_TextColor[8];} else {MaxShindo = '不明'; BackColor = kishocho_BackColor[9]; TextColor = kishocho_TextColor[9];}
+                        } else if (localStorage.getItem('quake_coloring') == 'NHK') {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = nhk_BackColor[0];TextColor = nhk_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = nhk_BackColor[1]; TextColor = nhk_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = nhk_BackColor[2]; TextColor = nhk_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = nhk_BackColor[3]; TextColor = nhk_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = nhk_BackColor[4]; TextColor = nhk_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = nhk_BackColor[5]; TextColor = nhk_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = nhk_BackColor[6]; TextColor = nhk_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = nhk_BackColor[7]; TextColor = nhk_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = nhk_BackColor[8]; TextColor = nhk_TextColor[8];} else {MaxShindo = '不明'; BackColor = nhk_BackColor[9]; TextColor = nhk_TextColor[9];}
+                        } else if (localStorage.getItem('quake_coloring') == 'KiwiMonitor 第2版') {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = kiwi2_BackColor[0];TextColor = kiwi2_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = kiwi2_BackColor[1]; TextColor = kiwi2_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = kiwi2_BackColor[2]; TextColor = kiwi2_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = kiwi2_BackColor[3]; TextColor = kiwi2_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = kiwi2_BackColor[4]; TextColor = kiwi2_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = kiwi2_BackColor[5]; TextColor = kiwi2_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = kiwi2_BackColor[6]; TextColor = kiwi2_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = kiwi2_BackColor[7]; TextColor = kiwi2_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = kiwi2_BackColor[8]; TextColor = kiwi2_TextColor[8];} else {MaxShindo = '不明'; BackColor = kiwi2_BackColor[9]; TextColor = kiwi2_TextColor[9];}
+                        } else if (localStorage.getItem('quake_coloring') == 'YDITS') {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = ydits_BackColor[0];TextColor = ydits_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = ydits_BackColor[1]; TextColor = ydits_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = ydits_BackColor[2]; TextColor = ydits_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = ydits_BackColor[3]; TextColor = ydits_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = ydits_BackColor[4]; TextColor = ydits_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = ydits_BackColor[5]; TextColor = ydits_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = ydits_BackColor[6]; TextColor = ydits_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = ydits_BackColor[7]; TextColor = ydits_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = ydits_BackColor[8]; TextColor = ydits_TextColor[8];} else {MaxShindo = '不明'; BackColor = ydits_BackColor[9]; TextColor = ydits_TextColor[9];}
+                        } else if (localStorage.getItem('quake_coloring') == 'カラフル1') {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = colorful1_BackColor[0];TextColor = colorful1_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = colorful1_BackColor[1]; TextColor = colorful1_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = colorful1_BackColor[2]; TextColor = colorful1_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = colorful1_BackColor[3]; TextColor = colorful1_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = colorful1_BackColor[4]; TextColor = colorful1_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = colorful1_BackColor[5]; TextColor = colorful1_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = colorful1_BackColor[6]; TextColor = colorful1_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = colorful1_BackColor[7]; TextColor = colorful1_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = colorful1_BackColor[8]; TextColor = colorful1_TextColor[8];} else {MaxShindo = '不明'; BackColor = colorful1_BackColor[9]; TextColor = colorful1_TextColor[9];}
+                        } else if (localStorage.getItem('quake_coloring') == 'ビビット') {
+                            if (calcintensity == '01') {MaxShindo = '1';BackColor = vivid_BackColor[0];TextColor = vivid_TextColor[0];} else if (calcintensity == '02') {MaxShindo = '2'; BackColor = vivid_BackColor[1]; TextColor = vivid_TextColor[1];} else if (calcintensity == '03') {MaxShindo = '3'; BackColor = vivid_BackColor[2]; TextColor = vivid_TextColor[2];} else if (calcintensity == '04') {MaxShindo = '4'; BackColor = vivid_BackColor[3]; TextColor = vivid_TextColor[3];} else if (calcintensity == '5-') {MaxShindo = '5弱'; BackColor = vivid_BackColor[4]; TextColor = vivid_TextColor[4];} else if (calcintensity == '5+') {MaxShindo = '5強'; BackColor = vivid_BackColor[5]; TextColor = vivid_TextColor[5];} else if (calcintensity == '6-') {MaxShindo = '6弱'; BackColor = vivid_BackColor[6]; TextColor = vivid_TextColor[6];} else if (calcintensity == '6+') {MaxShindo = '6強'; BackColor = vivid_BackColor[7]; TextColor = vivid_TextColor[7];} else if (calcintensity == '07') {MaxShindo = '7'; BackColor = vivid_BackColor[8]; TextColor = vivid_TextColor[8];} else {MaxShindo = '不明'; BackColor = vivid_BackColor[9]; TextColor = vivid_TextColor[9];}
+                        }
+
+                        var hasseijikoku = report_id.substring(0, 4)+'/'+report_id.substring(4, 6)+'/'+report_id.substring(6, 8)+' '+report_id.substring(8, 10)+':'+report_id.substring(10,12)+':'+report_id.substring(12,14);
+                        shindomoji.innerHTML = '<span style="font-size: min(6vh,calc(13vw/6));line-height: 1.1em;">最大震度</span><br><span style="font-size: min(15vh,17vw/2);line-height: 1.1em;font-weight: bold;">'+MaxShindo+'</span>';
+                        quakeinfo.innerHTML = '<span style="font-size: 5.5vh;font-weight: 500;">'+regionName+'</span><br><span style="font-size: calc(10vh / 3);">'+hasseijikoku+'<br>規模 : M'+magnitude+'　深さ'+depth+'<br>緊急地震速報（'+eewlevel+'）　'+isFinal_text+'第 '+reportNum+' 報';
+                        document.body.style.backgroundColor = BackColor;
+                        textcolor.style.color = TextColor;
+
+                        Cookies.set('lnglat',(lng+':'+lat));
+
+                        if (Cookies.get('sudenizumu') != 'yes') {
+                            if (magnitude < 5) {
+                                Cookies.set('sudenizumu','yes');
+                                map.flyTo(psCenter, magnitude * 1.5, { duration: 0.5 });
+                            } else {
+                                Cookies.set('sudenizumu','yes');
+                                map.flyTo(psCenter, parseInt(magnitude) , { duration: 0.5 });
+                            }
+                        }
+                    
+                });
+
+            }, 1000);
+
+        
+    });
+</script>
+</body>
+</html>

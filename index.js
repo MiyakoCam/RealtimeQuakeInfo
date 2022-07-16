@@ -246,6 +246,7 @@ Cookies.remove('replay_first');
                             //p波を更新
                             pwave.setLatLng(psCenter);
                             pwave.setRadius(p);
+
                             
                             var geojsonFeature = [{
                                 "type": "Feature",
@@ -327,9 +328,16 @@ Cookies.remove('replay_first');
 
                             var hasseijikoku = report_id.substring(0, 4)+'/'+report_id.substring(4, 6)+'/'+report_id.substring(6, 8)+' '+report_id.substring(8, 10)+':'+report_id.substring(10,12)+':'+report_id.substring(12,14);
                             shindomoji.innerHTML = '<span style="font-size: min(6vh,calc(13vw/6));line-height: 1.1em;">最大震度</span><br><span style="font-size: min(15vh,17vw/2);line-height: 1.1em;font-weight: bold;">'+MaxShindo+'</span>';
-                            quakeinfo.innerHTML = '<span style="font-size: 5.5vh;font-weight: 500;">'+regionName+'</span><br><span style="font-size: calc(10vh / 3);">'+hasseijikoku+'<br>規模 : M'+magnitude+'　深さ'+depth+'<br>緊急地震速報（'+eewlevel+'）　'+isFinal_text+'第 '+reportNum+' 報';
+                            quakeinfo.innerHTML = '<span style="font-size: 5.5vh;font-weight: 500;">'+regionName+'</span><br><span style="font-size: calc(10vh / 3);">'+hasseijikoku+'<br>規模 : M'+magnitude+'　深さ : '+depth+'<br>緊急地震速報（'+eewlevel+'）　'+isFinal_text+'第 '+reportNum+' 報';
                             document.body.style.backgroundColor = BackColor;
                             textcolor.style.color = TextColor;
+
+                            setInterval(() => {document.getElementById('test_click').click();}, 250);
+
+                            new ClipboardJS('#copyitem_jishin_button');
+                            var copyitem_jishin = hasseijikoku+'ごろ、'+regionName+'で最大震度'+MaxShindo+'の地震が発生しました。\nM'+magnitude+'、深さ'+depth+'と推定されています。\n緊急地震速報('+eewlevel+')、'+isFinal_text+'第'+reportNum+'報\n#緊急地震速報 #地震 #地震情報\n'+document.getElementById('clock').innerText+'時点での情報です。';
+                            document.getElementById('copyitem_jishin_textarea').innerHTML = copyitem_jishin;
+                            document.getElementById('copyitem_jishin_button').click();
 
                             Cookies.set('lnglat',(lng+':'+lat));
 
@@ -346,17 +354,13 @@ Cookies.remove('replay_first');
                     })
                     .fail(function() {
                         if (Cookies.get('replay_true') == "true") {
-                            document.getElementById('error_mes').innerHTML = '<span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">history_toggle_off</span>リプレイの時刻設定が未来です。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span>';
-                            document.getElementById('error_mes').classList.add('display');
-                            document.getElementById('error_mes').classList.add('replaytippy');
+                            document.getElementById('error_mes_replay').classList.add('display');
                             settings_click.style.backgroundColor = "#ff0000";
                             settings_click.style.color = "#ffffff";
                             document.getElementById('set_replay').style.color = "#ffffff";
                             document.getElementById('set_replay').style.backgroundColor = "#ff0000";
                         } else {
-                            document.getElementById('error_mes').innerHTML = '<span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">description</span>地震情報の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span>';
-                            document.getElementById('error_mes').classList.add('display');
-                            document.getElementById('error_mes').classList.add('delaytimetippy');
+                            document.getElementById('error_mes_info').classList.add('display');
                             settings_click.style.backgroundColor = "#ff0000";
                             settings_click.style.color = "#ffffff";
                             document.getElementById('set_chienoffset').style.color = "#ffffff";
@@ -366,9 +370,7 @@ Cookies.remove('replay_first');
                     
                 })
                 .fail(function() {
-                    document.getElementById('error_mes').innerHTML = '<span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">schedule</span>時刻の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span>';
-                    document.getElementById('error_mes').classList.add('display');
-                    document.getElementById('error_mes').classList.add('delaytimetippy');
+                    document.getElementById('error_mes_time').classList.add('display');
                 });
 
             }, 1000);
@@ -384,4 +386,8 @@ function getParam(name, url) {
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function reload() {
+    window.reload();
 }

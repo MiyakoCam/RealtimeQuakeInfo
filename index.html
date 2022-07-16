@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0">
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
+    <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/animations/perspective.css">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/themes/material.css">
         <style>
@@ -187,7 +188,7 @@
 .cap,.cap_left {
     z-index: 9999999;
 }
-#error_mes {
+#error_mes_time,#error_mes_info,#error_mes_replay {
     background-color: #d11b61;
     color: #ffffff;
     position: absolute;
@@ -200,7 +201,7 @@
     border-radius: 5px;
     display: none;
 }
-#error_mes.display {
+#error_mes_time.display,#error_mes_info.display,#error_mes_replay.display {
     display: inline;
 }
 .material-symbols-outlined.ido {
@@ -257,7 +258,7 @@
                     <td><input type="number" id="TimeApi_offset" style="font-size: 75%;" min="0">秒</td>
                 </tr>
                 <tr id="set_replay">
-                    <td align="center" class="set_replay_td1_tippy" data-tippy-content='<span style="font-size: 130%;font-weight: bold;color: red;">未来の日付・時刻を入力しないでください！</span><br>過去に発生した地震をリプレイで確認します。<br>現在の時刻に戻す場合、リプレイ停止を押してください。'>リプレイ</td>
+                    <td align="center" class="set_replay_td1_tippy">リプレイ</td>
                     <td><input type="date" id="set_replay_date" style="font-size: 75%;" class="cap" data-tippy-content="リプレイを開始する日付を入力してください。"><input type="time" id="set_replay_time" step="1" style="font-size: 75%;" class="cap" data-tippy-content="リプレイを開始する時刻を入力してください。"><br><button style="font-size: 75%;" id="set_replay_start" class="cap" data-tippy-content="上の日付・時刻からリプレイを開始します。">リプレイ開始</button>　<button style="font-size: 75%;" id="set_replay_reset" class="cap" data-tippy-content="リプレイを停止し、現在の時刻に戻します。">リプレイ停止</button></td>
                 </tr>
             </table>
@@ -265,36 +266,17 @@
         </div>
     </div>
     <span style="position: absolute;top: 10px;left: 10px;background-color: #ffffff;font-size: 1.2rem;color: #000000;border-radius: 5px;z-index: 500;padding: 5px;font-weight: 400;">お知らせ：時間の取得をAPIに変えてみました。</span>
-    <span id="error_mes"></span>
+    
+    <span id="error_mes_time"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">schedule</span>時刻の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>
+    <span id="error_mes_info"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">description</span>地震情報の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>
+    <span id="error_mes_replay"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">history_toggle_off</span>リプレイの時刻設定が未来です。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>
 
-    <script>
-    tippy('.cap', {//指定した要素にツールチップが出現
-        placement: 'top',//ツールチップの表示位置⇒top、top-start、top-end、right、right-start、right-end、bottom、bottom-start、bottom-end、left、left-start、left-end。指定をしなくてもtopに表示
-        animation: 'perspective',//ツールチップ出現の動き。動きを指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/animations/から任意の動きを選び内に読み込むことが必要。使用できる動き⇒shift-away、shift-away-subtle、shift-away-extreme、shift-toward、shift-toward-subtle、shift-toward-extreme、scale、scale-subtle、scale-extreme、perspective、perspective-subtle、perspective-extreme。指定をしなくてもfadeで表示
-        theme: '',//ツールチップのテーマの色。色を指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/themes/からテーマを選び内に読み込んで指定する。テーマの種類⇒light、light-border、material、translucent。指定をしなくても黒色で表示
-        duration: 200,
-        allowHTML: true,
-    });
-    /*tippy('.', {//指定した要素にツールチップが出現
-        content: '再読み込みしてください。<br><span class="material-symbols-outlined ido">settings</span>設定の「遅延オフセット」を2秒以上に調節してから、<br>左上の<span class="material-symbols-outlined ido">refresh</span>更新ボタン、または、<span class="material-symbols-outlined ido">keyboard</span>F5キー、で再読み込みしてください。',
-        placement: 'top',//ツールチップの表示位置⇒top、top-start、top-end、right、right-start、right-end、bottom、bottom-start、bottom-end、left、left-start、left-end。指定をしなくてもtopに表示
-        animation: 'perspective',//ツールチップ出現の動き。動きを指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/animations/から任意の動きを選び内に読み込むことが必要。使用できる動き⇒shift-away、shift-away-subtle、shift-away-extreme、shift-toward、shift-toward-subtle、shift-toward-extreme、scale、scale-subtle、scale-extreme、perspective、perspective-subtle、perspective-extreme。指定をしなくてもfadeで表示
-        theme: '',//ツールチップのテーマの色。色を指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/themes/からテーマを選び内に読み込んで指定する。テーマの種類⇒light、light-border、material、translucent。指定をしなくても黒色で表示
-        duration: 200,
-        allowHTML: true,
-    });*/
-    tippy('.delaytimetippy', {//指定した要素にツールチップが出現
-        content: '再読み込みしてください。<br><span class="material-symbols-outlined ido">settings</span>設定の「遅延オフセット」を2秒以上に調節してから、<br>左上の<span class="material-symbols-outlined ido">refresh</span>更新ボタン、または、<span class="material-symbols-outlined ido">keyboard</span>F5キー、で再読み込みしてください。',
-        placement: 'top',//ツールチップの表示位置⇒top、top-start、top-end、right、right-start、right-end、bottom、bottom-start、bottom-end、left、left-start、left-end。指定をしなくてもtopに表示
-        animation: 'perspective',//ツールチップ出現の動き。動きを指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/animations/から任意の動きを選び内に読み込むことが必要。使用できる動き⇒shift-away、shift-away-subtle、shift-away-extreme、shift-toward、shift-toward-subtle、shift-toward-extreme、scale、scale-subtle、scale-extreme、perspective、perspective-subtle、perspective-extreme。指定をしなくてもfadeで表示
-        theme: '',//ツールチップのテーマの色。色を指定するにはhttps://unpkg.com/browse/tippy.js@5.0.3/themes/からテーマを選び内に読み込んで指定する。テーマの種類⇒light、light-border、material、translucent。指定をしなくても黒色で表示
-        duration: 200,
-        allowHTML: true,
-    });
-    function reload() {
-        window.reload();
-    }
-    </script>
+    <textarea id="copyitem_jishin_textarea" readonly></textarea>
+    <button id="copyitem_jishin_button" data-clipboard-target="#copyitem_jishin_textarea">copy(automatic)</button>
+
+    <button id="test_click"></button>
+
+    <script src="tippy.js"></script>
     <script src="index.js"></script>
 </body>
 </html>
