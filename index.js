@@ -390,4 +390,4 @@ function getParam(name, url) {
 
 function reload() {
     window.reload();
-};
+}
