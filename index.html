@@ -31,188 +31,7 @@
     <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/animations/perspective.css">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/themes/material.css">
-        <style>
-            body {
-                overflow: hidden;
-                font-family: 'Noto Sans JP', sans-serif;
-                font-weight: 400;
-            }
-            input{
-                font-size: 100%;
-                font-family: 'Noto Sans JP';
-            }
-            #map {
-    bottom: 25vh;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 1;
-}
-#shindo {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 25vh;
-    width: 15vw;
-}
-#shindomoji {
-    margin: 0;
-    text-align: center;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-}
-#clock {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    font-size: 2rem;
-    background-color: #ffffff;
-    padding: 0 5px;
-}
-#homeinput {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 80%;
-    height: 80%;
-    background-color: #ffffff;
-    border-radius: 10px;
-    z-index: 5555;
-    display: none;
-    padding: 10px;
-}
-#naka {
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-}
-#quakeinfo {
-    position: absolute;
-    bottom: 0;
-    left: 15vw;
-    width: 50%;
-    height: 25vh;
-    padding-left: 10px;
-}
-#yosojikan {
-    display: none;
-    height: 15vh;
-    width: fit-content;
-    position: absolute;
-    bottom: 25vh;
-    left: 0;
-    z-index: 100;
-}
-#pha_con,#sha_con {
-    height: 50%;
-    width: 100%;
-    font-size: 6vh;
-    line-height: 1em;
-    color: #ffffff;
-    padding: 0 5px;
-}
-#pha_con input,#sha_con input {
-    background: none;
-    outline: none;
-    border: none;
-    font-size: 6vh;
-    width: 3em;
-    height: 1em;
-    color: #ffffff;
-    font-family: 'Noto Sans JP', sans-serif;
-}
-#pha_con {
-    background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgba(138,153,204,1) 50%, rgba(0,44,200,1) 100%);
-}
-#sha_con {
-    background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgba(205,139,139,1) 50%, rgba(200,0,0,1) 100%);
-}
-#settings_click {
-    position: absolute;
-    top: 75vh;
-    right: 0;
-    z-index: 10;
-    margin: 10px;
-    user-select: none;
-    transition: transform 0.25s ease-in-out 0s;
-}
-#settings_click:hover {
-    transform: rotate(60deg);
-}
-#settings {
-    display: none;
-    position: relative;
-    width: 70vw;
-    height: 80vh;
-    top: 0px;
-    left: 0px;
-    background-color: #0f644f;
-    z-index: 5000;
-    box-shadow: 0px 0px 15px 5px #5c5c5c;
-    padding: 5vh 10vw;
-    margin: 5vh auto;
-    font-family: 'Noto Sans JP';
-    font-size: 1.5rem;
-    color: #ffffff;
-}
-#settings.display {
-    display: block;
-}
-#coloring_select {
-    font-size: 75%;
-    font-family: 'Noto Sans JP';
-}
-#set_closebtn {
-    position: absolute;
-    font-size: 35px;
-    right: 2rem;
-    top: 2rem;
-    cursor: pointer;
-    user-select: none;
-    transition: transform 0.25s ease-in-out 0s;
-}
-#set_closebtn:hover {
-    background-color: #80808080;
-    border-radius: 5px;
-    transform: rotate(-90deg);
-}
-.settings_table {
-    width: 100%;
-    border-spacing: 0 1rem;
-}
-.cap,.cap_left {
-    z-index: 9999999;
-}
-#error_mes_time,#error_mes_info,#error_mes_replay {
-    background-color: #d11b61;
-    color: #ffffff;
-    position: absolute;
-    bottom: 25vh;
-    padding: 5px;
-    margin: 10px;
-    height: 2rem;
-    font-size: 1.2rem;
-    z-index: 10;
-    border-radius: 5px;
-    display: none;
-}
-#error_mes_time.display,#error_mes_info.display,#error_mes_replay.display {
-    display: inline;
-}
-.material-symbols-outlined.ido {
-    font-size: 135%;
-    transform: translateY(0.2em);
-}
-.material-symbols-outlined.space::after {
-    content: "\00A0";
-    font-family: 'Noto Sans JP';
-}
-        </style>
+    <link rel="stylesheet" href="index.css">
     <title>RealtimeQuakeInfo</title>
     
 </head>
@@ -224,7 +43,10 @@
         <div id="shindo"><p id="shindomoji"></p></div>
         <div id="quakeinfo"></div>
         <!--<div class="test"><h1><a href="index_2.html">能登半島震度6弱<br>テストはこちら</a></h1></div>-->
-        <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="settings_click"  data-tippy-content="設定を開く">settings</span>
+        <span class="btn_atsumari">
+            <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="infocopy_click"  data-tippy-content="地震情報をコピー" data-clipboard-target="#copyitem_jishin_textarea">content_copy</span>
+            <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="settings_click"  data-tippy-content="設定を開く">settings</span>
+        </span>
     </div>
     <div id="clock"></div>
     
@@ -272,9 +94,6 @@
     <span id="error_mes_replay"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">history_toggle_off</span>リプレイの時刻設定が未来です。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>
 
     <textarea id="copyitem_jishin_textarea" readonly></textarea>
-    <button id="copyitem_jishin_button" data-clipboard-target="#copyitem_jishin_textarea">copy(automatic)</button>
-
-    <button id="test_click"></button>
 
     <script src="tippy.js"></script>
     <script src="index.js"></script>

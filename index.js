@@ -1,12 +1,15 @@
 var map = L.map('map', {
-    center: [37.575, 135.984],
+    center: [38.575, 137.984],
     zoom: 5,
 });
 map.zoomControl.setPosition('topright');
-L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+//L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+//L.tileLayer("https://tile.mierune.co.jp/mierune/{z}/{x}/{y}.png",
+//L.tileLayer("https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
+L.tileLayer("https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", /*y:衛星+情報 s:衛星 r:道 m:一般マップ*/
+//L.tileLayer("http://tile.stamen.com/terrain/{z}/{x}/{y}.png",
     {
-        attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a>'
+        attribution: '© <a href="https://google.com/maps">Google</a>'
     }).addTo(map);
 
 //p波マーカー初期化
@@ -194,6 +197,7 @@ Cookies.remove('replay_first');
                             document.body.style.backgroundColor = '';
                             textcolor.style.color = '';
                             yosojikan.style.display = 'none';
+                            document.getElementById('copyitem_jishin_textarea').innerHTML = '';
                             Cookies.remove('sudenizumu');
                             Cookies.remove('firstse');
                             Cookies.remove('lnglat');
@@ -332,12 +336,12 @@ Cookies.remove('replay_first');
                             document.body.style.backgroundColor = BackColor;
                             textcolor.style.color = TextColor;
 
-                            setInterval(() => {document.getElementById('test_click').click();}, 250);
-
-                            new ClipboardJS('#copyitem_jishin_button');
-                            var copyitem_jishin = hasseijikoku+'ごろ、'+regionName+'で最大震度'+MaxShindo+'の地震が発生しました。\nM'+magnitude+'、深さ'+depth+'と推定されています。\n緊急地震速報('+eewlevel+')、'+isFinal_text+'第'+reportNum+'報\n#緊急地震速報 #地震 #地震情報\n'+document.getElementById('clock').innerText+'時点での情報です。';
+                            var copyitem_jishin = hasseijikoku+'ごろ、'+regionName+'で震度'+MaxShindo+'の地震が発生しました。\nM'+magnitude+'、深さ'+depth+'と推定されています。\n緊急地震速報('+eewlevel+')、'+isFinal_text+'第'+reportNum+'報\n#緊急地震速報 #地震 #地震情報 #'+regionName+' #震度'+MaxShindo+'\n'+document.getElementById('clock').innerText+'時点での情報です。';
                             document.getElementById('copyitem_jishin_textarea').innerHTML = copyitem_jishin;
-                            document.getElementById('copyitem_jishin_button').click();
+
+                            document.getElementById('infocopy_click').addEventListener("click",()=>{
+                                new ClipboardJS('#infocopy_click');
+                            });
 
                             Cookies.set('lnglat',(lng+':'+lat));
 

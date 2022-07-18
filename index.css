@@ -8,107 +8,119 @@ input{
     font-family: 'Noto Sans JP';
 }
 #map {
-bottom: 25vh;
-left: 0;
-position: absolute;
-right: 0;
-top: 0;
-z-index: 1;
+    bottom: 25vh;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
 }
 #shindo {
-position: absolute;
-bottom: 0;
-left: 0;
-height: 25vh;
-width: 15vw;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 25vh;
+    width: 15vw;
 }
 #shindomoji {
-margin: 0;
-text-align: center;
-position: relative;
-top: 50%;
-left: 50%;
-transform: translate(-50%,-50%);
+    margin: 0;
+    text-align: center;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 #clock {
-position: absolute;
-right: 0;
-bottom: 0;
-font-size: 2rem;
-background-color: #ffffff;
-padding: 0 5px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 2rem;
+    background-color: #ffffff;
+    padding: 0 5px;
 }
 #homeinput {
-position: fixed;
-top: 50%;
-left: 50%;
-transform: translate(-50%,-50%);
-width: 80%;
-height: 80%;
-background-color: #ffffff;
-border-radius: 10px;
-z-index: 5555;
-display: none;
-padding: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 80%;
+    height: 80%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    z-index: 5555;
+    display: none;
+    padding: 10px;
 }
 #naka {
-position: relative;
-top: 50%;
-left: 50%;
-transform: translate(-50%,-50%);
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
 }
 #quakeinfo {
-position: absolute;
-bottom: 0;
-left: 15vw;
-width: 50%;
-height: 25vh;
-padding-left: 10px;
+    position: absolute;
+    bottom: 0;
+    left: 15vw;
+    width: 50%;
+    height: 25vh;
+    padding-left: 10px;
 }
 #yosojikan {
-display: none;
-height: 15vh;
-width: fit-content;
-position: absolute;
-bottom: 25vh;
-left: 0;
-z-index: 100;
+    display: none;
+    height: 15vh;
+    width: fit-content;
+    position: absolute;
+    bottom: 25vh;
+    left: 0;
+    z-index: 100;
 }
 #pha_con,#sha_con {
-height: 50%;
-width: 100%;
-font-size: 6vh;
-line-height: 1em;
-color: #ffffff;
-padding: 0 5px;
+    height: 50%;
+    width: 100%;
+    font-size: 6vh;
+    line-height: 1em;
+    color: #ffffff;
+    padding: 0 5px;
 }
 #pha_con input,#sha_con input {
-background: none;
-outline: none;
-border: none;
-font-size: 6vh;
-width: 3em;
-height: 1em;
-color: #ffffff;
-font-family: 'Noto Sans JP', sans-serif;
-}
+    background: none;
+    outline: none;
+    border: none;
+    font-size: 6vh;
+    width: 3em;
+    height: 1em;
+    color: #ffffff;
+    font-family: 'Noto Sans JP', sans-serif;
+    }
 #pha_con {
-background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgba(138,153,204,1) 50%, rgba(0,44,200,1) 100%);
+    background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgb(166, 179, 221) 50%, rgba(0,44,200,1) 100%);
 }
 #sha_con {
-background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgba(205,139,139,1) 50%, rgba(200,0,0,1) 100%);
+    background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgb(224, 168, 168) 50%, rgba(200,0,0,1) 100%);
+}
+.btn_atsumari {
+    position: absolute;
+    top: 75vh;
+    right: 0;
+    z-index: 10;
+    margin: 7px;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+.btn_atsumari span {
+    margin: 0 2px;
 }
 #settings_click {
-position: absolute;
-top: 75vh;
-right: 0;
-z-index: 10;
-margin: 10px;
-user-select: none;
-transition: transform 0.25s ease-in-out 0s;
+    transition: transform 0.25s ease-in-out 0s;
 }
 #settings_click:hover {
-transform: rotate(60deg);
+    transform: rotate(60deg);
+}
+#infocopy_click {
+    transition: transform 0.25s ease-in-out 0s;
+}
+#infocopy_click:hover {
+    transform: scale(1.22);
 }
 #settings {
 display: none;
