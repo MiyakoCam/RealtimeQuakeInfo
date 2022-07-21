@@ -17,6 +17,7 @@
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/e9f92a9dd0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet-src.js" integrity="sha512-Uj3ED3j6dg1xxMgtj4kF4W60Tc1HGboQ5gweT+hG1z8sBIc0ncFuoh3qV5XZF8ZqlEGlV9mt9E6MZhLN3zFDJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
@@ -44,6 +45,7 @@
         <div id="quakeinfo"></div>
         <!--<div class="test"><h1><a href="index_2.html">能登半島震度6弱<br>テストはこちら</a></h1></div>-->
         <span class="btn_atsumari">
+            <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="appinfo_click"  data-tippy-content="アプリの情報">info</span>
             <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="infocopy_click"  data-tippy-content="地震情報をコピー" data-clipboard-target="#copyitem_jishin_textarea">content_copy</span>
             <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="settings_click"  data-tippy-content="設定を開く">settings</span>
         </span>
@@ -57,7 +59,7 @@
     
     <div id="settings">
         <span class="material-symbols-outlined cap" id="set_closebtn" data-tippy-content="設定を閉じる">close</span>
-        <p style="font-family: 'Nanka Sans','Noto Sans JP';font-weight: normal;text-align: center;font-size: 2rem;margin-top: 0;" class="cap" data-tippy-content="各種設定を行います。<br>詳しくは各設定の名前の上にカーソルを移動させてください。">Settings ─ 設定</p>
+        <p style="font-family: 'Nanka Sans','Noto Sans JP';font-weight: normal;text-align: center;font-size: 2rem;margin-top: 0;" class="cap" data-tippy-content="各種設定を行います。<br>詳しくは各設定の名前の上にカーソルを移動させてください。">Settings - 設定</p>
         <div id="coloring_con">
             <table class="settings_table">
                 <tr id="set_haishoku">
@@ -87,7 +89,33 @@
             
         </div>
     </div>
-    <span style="position: absolute;top: 10px;left: 10px;background-color: #ffffff;font-size: 1.2rem;color: #000000;border-radius: 5px;z-index: 500;padding: 5px;font-weight: 400;">お知らせ：時間の取得をAPIに変えてみました。</span>
+    <div id="app_infomation">
+        <span class="material-symbols-outlined cap" id="appinfo_closebtn" data-tippy-content="アプリの情報を閉じる">close</span>
+        <p style="font-family: 'Nanka Sans','Noto Sans JP';font-weight: normal;text-align: center;font-size: 2rem;margin-top: 0;">Infomation - 情報</p>
+        <div style="text-align: center;line-height: 1.6em;">
+            RealtimeQuakeInfo v0.0.3 <a href="http://nanka.html.xdomain.jp/html/quake/#RealtimeQuakeInfo" target="_blank" style="color: white;"><i class="fa-solid fa-house"></i></a> <a href="https://github.com/MiyakoCam/RealtimeQuakeInfo" target="_blank" style="color: white;"><i class="fa-brands fa-github"></i></a><br>
+            By <a href="https://twitter.com/MiyakoCam" target="_blank"><i class="fa-brands fa-twitter" style="color: white;"></i></a> MiyakojimaCam
+        </div>
+        情報取得元
+        <div style="padding-left: 5%;font-size: 0.7em;line-height: 1.9em;">
+            <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
+                <li>Yahoo!地震情報 by Yahoo!Japan</li>
+                <li>NIED強震モニタ with <a href="https://twitter.com/wolf204821" target="_blank"><i class="fa-brands fa-twitter" style="color: white;"></i></a> Wolf20482さん</li>
+                <li>WorldTimeAPI by WorldTimeAPI</li>
+            </ul>
+        </div>
+        SpecialThanks
+        <div style="padding-left: 5%;font-size: 0.7em;line-height: 1.9em;">
+            <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
+                <li><a href="https://twitter.com/Ameuma773" target="_blank"><i class="fa-brands fa-twitter" style="color: white;"></i></a> あめうまさん(原案やデザイン、コードなどの提供)</li>
+                <li><a href="https://twitter.com/wolf204821" target="_blank"><i class="fa-brands fa-twitter" style="color: white;"></i></a> Wolf20482さん(緊急地震速報APIの提供)</li>
+                <li><a href="https://twitter.com/c_onripi_dev" target="_blank"><i class="fa-brands fa-twitter" style="color: white;"></i></a> Conripiさん(<a href="https://qiita.com/Conripi/items/a22b11d4aece5106793b" target="_blank" style="color: white;">Yahooから予想円を取得してみる。<i class="fa-solid fa-arrow-up-right-from-square"></i></a>)</li>
+                その他、たくさんのご協力をいただきました。(配色テーマやコードなど)
+            </ul>
+        </div>
+    </div>
+
+    <span style="position: absolute;top: 10px;left: 10px;background-color: #ffffff;font-size: 1rem;color: #000000;border-radius: 5px;z-index: 500;padding: 5px;font-weight: 400;outline: #000000 dashed 2px;">お知らせ : コピーボタンと情報ボタンを追加しました。</span>
     
     <span id="error_mes_time"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">schedule</span>時刻の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>
     <span id="error_mes_info"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">description</span>地震情報の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>

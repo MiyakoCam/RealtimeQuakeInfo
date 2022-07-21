@@ -91,12 +91,13 @@ input{
     height: 1em;
     color: #ffffff;
     font-family: 'Noto Sans JP', sans-serif;
+    text-align: right;
     }
 #pha_con {
-    background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgb(166, 179, 221) 50%, rgba(0,44,200,1) 100%);
+    background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgb(140, 154, 202) 50%, rgba(0,44,200,1) 100%);
 }
 #sha_con {
-    background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgb(224, 168, 168) 50%, rgba(200,0,0,1) 100%);
+    background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgb(207, 140, 140) 50%, rgba(200,0,0,1) 100%);
 }
 .btn_atsumari {
     position: absolute;
@@ -122,6 +123,13 @@ input{
 #infocopy_click:hover {
     transform: scale(1.22);
 }
+#appinfo_click {
+    transition: transform 0.35s ease-in-out 0s;
+    transform-origin: left top;
+}
+#appinfo_click:hover {
+    transform: rotateX(-180deg) rotateY(180deg) rotateZ(180deg);
+}
 #settings {
 display: none;
 position: relative;
@@ -141,11 +149,31 @@ color: #ffffff;
 #settings.display {
 display: block;
 }
+#app_infomation {
+display: none;
+position: relative;
+width: 70vw;
+height: 80vh;
+top: 0px;
+left: 0px;
+background-color: #0f1364;
+z-index: 5000;
+box-shadow: 0px 0px 15px 5px #5c5c5c;
+padding: 5vh 10vw;
+margin: 5vh auto;
+font-family: 'Noto Sans JP';
+font-size: 1.5rem;
+color: #ffffff;
+overflow-y: auto;
+}
+#app_infomation.display {
+display: block;
+}
 #coloring_select {
 font-size: 75%;
 font-family: 'Noto Sans JP';
 }
-#set_closebtn {
+#set_closebtn,#appinfo_closebtn {
 position: absolute;
 font-size: 35px;
 right: 2rem;
@@ -154,7 +182,7 @@ cursor: pointer;
 user-select: none;
 transition: transform 0.25s ease-in-out 0s;
 }
-#set_closebtn:hover {
+#set_closebtn:hover,#appinfo_closebtn:hover {
 background-color: #80808080;
 border-radius: 5px;
 transform: rotate(-90deg);

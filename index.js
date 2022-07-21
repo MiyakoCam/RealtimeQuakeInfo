@@ -43,6 +43,12 @@ settings_click.addEventListener("click",()=>{
 set_closebtn.addEventListener("click",()=>{
     settings.classList.remove('display');
 });
+document.getElementById('appinfo_click').addEventListener("click",()=>{
+    app_infomation.classList.add('display');
+});
+document.getElementById('appinfo_closebtn').addEventListener("click",()=>{
+    app_infomation.classList.remove('display');
+});
 set_replay_start.addEventListener("click",()=>{
     if (set_replay_date.value != '' && set_replay_time.value != ''){
        Cookies.set('replay_true','true');
