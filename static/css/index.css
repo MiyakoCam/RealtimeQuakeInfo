@@ -1,0 +1,308 @@
+body {
+    overflow: hidden;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 400;
+}
+input{
+    font-size: 100%;
+    font-family: 'Noto Sans JP';
+}
+#map {
+    bottom: 25vh;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+}
+#shindo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 25vh;
+    width: 15vw;
+}
+#shindomoji {
+    margin: 0;
+    text-align: center;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#clock {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 2rem;
+    background-color: #ffffff;
+    padding: 0 5px;
+}
+#homeinput {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 80%;
+    height: 80%;
+    background-color: #ffffff;
+    border-radius: 10px;
+    z-index: 5555;
+    display: none;
+    padding: 10px;
+}
+#naka {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+#quakeinfo {
+    position: absolute;
+    bottom: 0;
+    left: 15vw;
+    width: 50%;
+    height: 25vh;
+    padding-left: 10px;
+}
+#yosojikan {
+    display: none;
+    height: 15vh;
+    width: fit-content;
+    position: absolute;
+    bottom: 25vh;
+    left: 0;
+    z-index: 100;
+}
+#pha_con,#sha_con {
+    height: 50%;
+    width: 100%;
+    font-size: 6vh;
+    line-height: 1em;
+    color: #ffffff;
+    padding: 0 5px;
+}
+#pha_con input,#sha_con input {
+    background: none;
+    outline: none;
+    border: none;
+    font-size: 6vh;
+    width: 3em;
+    height: 1em;
+    color: #ffffff;
+    font-family: 'Noto Sans JP', sans-serif;
+    text-align: right;
+    }
+#pha_con {
+    background: linear-gradient(127deg, rgba(0,44,200,1) 0%, rgb(140, 154, 202) 50%, rgba(0,44,200,1) 100%);
+}
+#sha_con {
+    background: linear-gradient(127deg, rgba(200,0,0,1) 0%, rgb(207, 140, 140) 50%, rgba(200,0,0,1) 100%);
+}
+.btn_atsumari {
+    position: absolute;
+    top: 75vh;
+    right: 0;
+    z-index: 10;
+    margin: 7px;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+.btn_atsumari span {
+    margin: 0 2px;
+}
+#settings_click {
+    transition: transform 0.25s ease-in-out 0s;
+}
+#settings_click:hover {
+    transform: rotate(60deg);
+}
+#infocopy_click {
+    transition: transform 0.25s ease-in-out 0s;
+}
+#infocopy_click:hover {
+    transform: scale(1.22);
+}
+#appinfo_click {
+    transition: transform 0.35s ease-in-out 0s;
+}
+#appinfo_click:hover {
+    transform: rotateY(-180deg);
+}
+#settings {
+display: none;
+position: relative;
+width: 70vw;
+height: 80vh;
+top: 0px;
+left: 0px;
+background-color: #0f644f;
+z-index: 5000;
+box-shadow: 0px 0px 15px 5px #5c5c5c;
+padding: 5vh 10vw;
+margin: 5vh auto;
+font-family: 'Noto Sans JP';
+font-size: 1.5rem;
+color: #ffffff;
+overflow-y: auto;
+}
+#settings.display {
+display: block;
+}
+#app_infomation {
+display: none;
+position: relative;
+width: 70vw;
+height: 80vh;
+top: 0px;
+left: 0px;
+background-color: #0f1364;
+z-index: 5000;
+box-shadow: 0px 0px 15px 5px #5c5c5c;
+padding: 5vh 10vw;
+margin: 5vh auto;
+font-family: 'Noto Sans JP';
+font-size: 1.5rem;
+color: #ffffff;
+overflow-y: auto;
+}
+#app_infomation.display {
+display: block;
+}
+#settings::-webkit-scrollbar,#app_infomation::-webkit-scrollbar {
+    width: 22px;
+}
+#settings::-webkit-scrollbar-track,#app_infomation::-webkit-scrollbar-track {
+    background: #e4e4e4;
+}
+#settings::-webkit-scrollbar-thumb,#app_infomation::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgb(139, 116, 219) 0%, rgba(209,98,190,1) 100%);
+    border: transparent 6px solid;
+    border-radius: 12.5px;
+    background-clip: content-box;
+}
+#coloring_select {
+font-size: 75%;
+font-family: 'Noto Sans JP';
+}
+#coloring_con tr td:first-of-type {
+    cursor: default;
+}
+#set_closebtn,#appinfo_closebtn {
+position: absolute;
+font-size: 35px;
+right: 2rem;
+top: 2rem;
+cursor: pointer;
+user-select: none;
+transition: transform 0.25s ease-in-out 0s;
+}
+#set_closebtn:hover,#appinfo_closebtn:hover {
+background-color: #80808080;
+border-radius: 5px;
+transform: rotate(-90deg);
+}
+.settings_table {
+width: 100%;
+border-spacing: 0 1rem;
+}
+.cap,.cap_left {
+z-index: 9999999;
+}
+#error_mes_time,#error_mes_info,#error_mes_replay {
+background-color: #d11b61;
+color: #ffffff;
+position: absolute;
+bottom: 25vh;
+padding: 5px;
+margin: 10px;
+height: 2rem;
+font-size: 1.2rem;
+z-index: 10;
+border-radius: 5px;
+display: none;
+}
+#error_mes_time.display,#error_mes_info.display,#error_mes_replay.display {
+display: inline;
+}
+.material-symbols-outlined.ido {
+font-size: 135%;
+transform: translateY(0.2em);
+}
+.material-symbols-outlined.space::after {
+content: "\00A0";
+font-family: 'Noto Sans JP';
+}
+
+.switch_windows {
+    position: relative;
+    top: 0.22em;
+}
+.switch_windows_label {
+	width: 2.5em;
+	position: relative;
+	display: inline-block;
+}
+.switch_windows_content {
+	display: block;
+    cursor: pointer;
+    position: relative;
+    border-radius: 30px;
+    height: 1.1em;
+	transition: all .1s .4s;
+	overflow: hidden;
+}
+.switch_windows_content:before {
+	content: "";
+	display: block;
+	position: absolute;
+	width: calc(110% - (6px + 10%));
+	height: calc(100% - 6px);
+	top: 0;
+	left: 0;
+	border: 3px solid #363636;
+	border-radius: 20px;
+	background-color: #fff;
+}
+.switch_windows_content:after {
+	content: "";
+	display: block;
+	position: absolute;
+	background-color: transparent;
+	width: 0;
+	height: 100%;
+	top: 0;
+	left: 0;
+	border-radius: 20px;
+	transition: all .5s;
+}
+.switch_windows_input {
+	display: none;
+}
+.switch_windows_circle {
+	display: block;
+	top: 0.25em;
+	left: 0.3em;
+	position: absolute;
+	width: 0.6em;
+	height: 0.6em;
+	border-radius: 10px;
+	background-color: #363636;
+	transition: all .5s;
+}
+.switch_windows_input:checked ~ .switch_windows_circle {
+	left: 1.58em;
+	background-color: #fff;
+}
+.switch_windows_input:checked ~ .switch_windows_content {
+    transition: all 0s;
+}
+ 
+.switch_windows_input:checked ~ .switch_windows_content:after {
+	background-color: #0078d7;
+	width: calc(100% - 6px);
+	height: calc(100% - 6px);
+    left: 3px;
+    top: 3px;
+    outline: 3px white solid;
+}
