@@ -1,16 +1,19 @@
 var map = L.map('map', {
     center: [38.575, 137.984],
     zoom: 5,
+    minZoom: 2,
 });
+L.control.scale({maxWidth:150,position:'bottomright',imperial:false}).addTo(map);  // スケールを表示
 map.zoomControl.setPosition('topright');
-//L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-//L.tileLayer("https://tile.mierune.co.jp/mierune/{z}/{x}/{y}.png",
-//L.tileLayer("https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
-L.tileLayer("https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", /*y:衛星+情報 s:衛星 r:道 m:一般マップ*/
-//L.tileLayer("http://tile.stamen.com/terrain/{z}/{x}/{y}.png",
+/*L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+L.tileLayer("https://tile.mierune.co.jp/mierune/{z}/{x}/{y}.png",
+L.tileLayer("https://tile.mierune.co.jp/mierune_mono/{z}/{x}/{y}.png",
+L.tileLayer("https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", /*y:衛星+情報 s:衛星 r:道 m:一般マップ
+L.tileLayer("http://tile.stamen.com/terrain/{z}/{x}/{y}.png",
     {
         attribution: '© <a href="https://google.com/maps">Google</a>'
     }).addTo(map);
+    */
     /*L.vectorGrid.protobuf("https://earthquake-alert.github.io/maps/pbf_japan/pref_jma/{z}/{x}/{y}.pbf", {
         attribution: "<a href='https://github.com/koukita/2018_09_06_atumatyou' target='_blank'>この地図は地理院地図　平成30年北海道胆振東部地震 厚真川地区 正射画像をトレースした地図です</a>",
         maxNativeZoom: 14,
@@ -18,8 +21,24 @@ L.tileLayer("https://mt0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", /*y:衛星+情
         maxZoom: 18,
         rendererFactory: L.canvas.tile
       }).addTo(map);*/
+      map.createPane("pane_map").style.zIndex = 1;
+      let border; //市区町界        
+            $.getJSON("static/js/zenkoku.geojson",function(data) {
+                border = L.geoJson(data,{
+                    pane: "pane_map",
+                    style: {
+                    "color": "#777777",
+                    "weight": 1,
+                    "opacity": 1,
+                    "fillColor": "#F5F5F5",
+                    "fillOpacity": 1,
+                    }
+                }).addTo(map);
+            });
 //p波マーカー初期化
+map.createPane("pane_circle").style.zIndex = 100;
 var pwave = L.circle([0, 0], {
+    pane: "pane_circle",
     radius: 0,
     color: 'blue',
     fillColor: '#399ade',
@@ -28,10 +47,12 @@ var pwave = L.circle([0, 0], {
 
 //s波マーカー初期化
 var swave = L.circle([0, 0], {
+    pane: "pane_circle",
     radius: 0,
     color: '#dc143c',
     fillColor: '#dc143c',
     fillOpacity: 0.15,
+    zIndexOffset: 100,
 }).addTo(map);
 
 let settings_click = document.getElementById('settings_click');
@@ -89,6 +110,15 @@ document.getElementById('switch_errormes').addEventListener("change",()=>{
         localStorage.setItem('errormes_onoff','off');
     }
 });
+document.getElementById('set_latlngset').addEventListener("click",()=>{
+    location.href = 'latlngset.html';
+});
+document.getElementById('set_latlngdel').addEventListener("click",()=>{
+    localStorage.removeItem('quake_lathome');
+    localStorage.removeItem('quake_lnghome');
+    location.reload();
+});
+
 if (localStorage.getItem('errorreload_onoff') != 'off') {
     localStorage.setItem('errorreload_onoff','on');
     document.getElementById('switch_errorreload').checked = true;
@@ -146,9 +176,36 @@ Cookies.remove('error_times')
                 let home_kari_retsu = home_kari.split(',');
                 localStorage.setItem('quake_lathome',home_kari_retsu[0]);
                 localStorage.setItem('quake_lnghome',home_kari_retsu[1]);
-                setTimeout(() => {location.reload();} ,100);
+                setTimeout(() => {location.reload();} ,300);
             });
         }
+        var userpoint = [{
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [localStorage.getItem('quake_lathome'), localStorage.getItem('quake_lnghome')]
+            }
+        }];
+        
+        L.geoJson(userpoint[0],
+            {
+                onEachFeature: function (feature, layer) {
+                    if (feature.properties && feature.properties.popupContent) {
+                        layer.bindPopup(feature.properties.popupContent);
+                    }
+                    layer.myTag = "Userpoint"
+                },
+                pointToLayer: function (feature, latlng) {
+                    var myIcon = L.icon({
+                        iconUrl: 'static/image/userpoint.png',
+                        iconSize: [35, 35],
+                        popupAnchor: [0, -35]
+                    });
+                    return L.marker([localStorage.getItem('quake_lathome'), localStorage.getItem('quake_lnghome')], { icon: myIcon, zIndexOffset: 50 ,title: '自分の現在地'}).bindPopup("自分の現在地。"+localStorage.getItem('quake_lathome')+","+localStorage.getItem('quake_lnghome')+"<br>現在地と異なる場合は、設定から修正してください。");
+                }
+            
+            }).addTo(map);
+
             var shindo = document.getElementById('shindo');
             var shindomoji = document.getElementById('shindomoji');
             var yosojikan = document.getElementById('yosojikan');
@@ -316,7 +373,6 @@ Cookies.remove('error_times')
                             pwave.setLatLng(psCenter);
                             pwave.setRadius(p);
 
-                            
                             var geojsonFeature = [{
                                 "type": "Feature",
                                 "geometry": {
@@ -336,10 +392,10 @@ Cookies.remove('error_times')
                                 pointToLayer: function (feature, latlng) {
                                     var myIcon = L.icon({
                                         iconUrl: 'static/image/shingen.png',
-                                        iconSize: [40, 40],
-                                        popupAnchor: [0, -40]
+                                        iconSize: [50, 50],
+                                        popupAnchor: [0, -50]
                                     });
-                                    return L.marker(latlng, { icon: myIcon, zIndexOffset: 100 });
+                                    return L.marker(latlng, { icon: myIcon, zIndexOffset: 100});
                                 }
                             
                             }).addTo(map)
@@ -417,10 +473,10 @@ Cookies.remove('error_times')
                             if (Cookies.get('sudenizumu') != 'yes') {
                                 if (magnitude < 5) {
                                     Cookies.set('sudenizumu','yes');
-                                    map.flyTo(psCenter, (8 - magnitude) * 1.7, { duration: 0.5 });
+                                    map.flyTo(psCenter, Math.floor((8 - magnitude) * 1.7), { duration: 0.5 });
                                 } else {
                                     Cookies.set('sudenizumu','yes');
-                                    map.flyTo(psCenter, parseInt(magnitude * 1.1) , { duration: 0.5 });
+                                    map.flyTo(psCenter, Math.floor(parseInt(magnitude * 1.1)) , { duration: 0.5 });
                                 }
                             }
                         

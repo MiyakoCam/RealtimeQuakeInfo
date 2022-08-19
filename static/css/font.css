@@ -1,0 +1,53 @@
+/*Google Sans*/
+@font-face {
+    font-family: GoogleSans;
+    font-weight: 400;
+    font-style: normal;
+    src: url(../font/GoogleSans-Regular.woff2);
+}
+@font-face {
+    font-family: GoogleSans;
+    font-weight: 500;
+    font-style: normal;
+    src: url(../font/GoogleSans-Medium.woff2);
+}
+@font-face {
+    font-family: GoogleSans;
+    font-weight: 700;
+    font-style: normal;
+    src: url(../font/GoogleSans-Bold.woff2);
+}
+
+/*JetBrainsSans*/
+@font-face {
+    font-family: JetBrainsSans;
+    font-weight: 400;
+    font-style: normal;
+    src: url(../font/JetBrainsSans-Regular.woff2);
+}
+@font-face {
+    font-family: JetBrainsSans;
+    font-weight: 700;
+    font-style: normal;
+    src: url(../font/JetBrainsSans-SBold.woff2);
+}
+
+/*geograph*/
+@font-face {
+    font-family: geograph;
+    font-weight: 400;
+    font-style: normal;
+    src: url(../font/geograph-regular.woff2);
+}
+@font-face {
+    font-family: geograph;
+    font-weight: 500;
+    font-style: normal;
+    src: url(../font/geograph-medium.woff2);
+}
+@font-face {
+    font-family: geograph;
+    font-weight: 700;
+    font-style: normal;
+    src: url(../font/geograph-bold.woff2);
+}

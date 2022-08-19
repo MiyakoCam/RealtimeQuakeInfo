@@ -33,9 +33,18 @@
     <script src="https://unpkg.com/clipboard@2/dist/clipboard.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/animations/perspective.css">
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6.3.7/themes/material.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     <link rel="stylesheet" href="static/css/index.css">
+    <link rel="stylesheet" href="static/css/font.css">
     <title>RealtimeQuakeInfo</title>
-    
+
+    <!--SNSでのサイト表示-->
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:site" content="@RealQuakeInfo">
+    <meta property="twitter:description" content="Web上で地震情報・緊急地震速報を受信して、地図上で確認できます。">
+    <meta property="og:title" content="RealtimeQuakeInfo">
+    <meta property="og:image" content="http://nanka.html.xdomain.jp/html/RealtimeQuakeInfo/static/image/logo.png">
+    <meta property="og:site_name" content="RealtimeQuakeInfo">
 </head>
 <body>
     <div class="container">
@@ -108,6 +117,10 @@
                         </span>
                     </td>
                 </tr>
+                <tr id="set_latlng">
+                    <td align="center" class="cap" data-tippy-content="現在地が異なる場合に修正します。<br>初期設定ではアクセス情報から取得しているので、都心部以外からアクセスしたときに間違っていることが多いです。">現在地の修正</td>
+                    <td><button id="set_latlngset" style="font-size: 75%;" class="cap" data-tippy-content="現在地を修正するため別のページへ飛び、修正します。">修正する</button>&emsp;<button id="set_latlngdel" style="font-size: 75%;" class="cap" data-tippy-content="修正した現在地を、アクセス情報に基づく現在地に戻します。">初期設定に戻す</button></td>
+                </tr>
                 <tr id="set_errormes">
                     <td align="center" class="cap" data-tippy-content='<span style="font-size: 150%;">この機能は開発者用です。</span><br>エラーメッセージをオフにします。<br>エラーメッセージをオフにすると、地震情報を取得できないうえ、エラー箇所の特定が遅れる場合があります。'>エラーメッセージ</td>
                     <td>
@@ -128,7 +141,7 @@
         <span class="material-symbols-outlined cap" id="appinfo_closebtn" data-tippy-content="アプリの情報を閉じる">close</span>
         <p style="font-family: 'Nanka Sans','Noto Sans JP';font-weight: normal;text-align: center;font-size: 2rem;margin-top: 0;">Infomation - 情報</p>
         <div style="text-align: center;line-height: 1.6em;">
-            RealtimeQuakeInfo v0.0.5<br>
+            RealtimeQuakeInfo v0.0.6<br>
             By <a href="https://twitter.com/MiyakoCam" target="_blank" style="color: white;"><i class="fa-brands fa-twitter" style="color: white;"></i> MiyakojimaCam</a>
         </div>
         リンク
@@ -143,7 +156,7 @@
         <div style="padding-left: 5%;font-size: 0.7em;line-height: 1.9em;">
             <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
                 <li>Yahoo!地震情報 by <a href="https://typhoon.yahoo.co.jp/weather/jp/earthquake/" target="_blank" style="color: white;">Yahoo!Japan <i class="fa-solid fa-arrow-up-right-from-square"></i></a></li>
-                <li>NIED強震モニタ with <a href="https://twitter.com/wolf204821" target="_blank" style="color: white;"><i class="fa-brands fa-twitter" style="color: white;"></i> Wolf20482</a>さん</li>
+                <li>NIED強震モニタ by <a href="https://twitter.com/wolf204821" target="_blank" style="color: white;"><i class="fa-brands fa-twitter" style="color: white;"></i> Wolf20482</a>さん</li>
                 <li>WorldTimeAPI by <a href="http://worldtimeapi.org/" target="_blank" style="color: white;">WorldTimeAPI <i class="fa-solid fa-arrow-up-right-from-square"></i></a></li>
             </ul>
         </div>
@@ -157,7 +170,15 @@
             </ul>
         </div>
         更新履歴
-        <div style="padding-left: 5%;font-size: 0.7em;line-height: 1.4em;">
+        <div style="padding-left: 5%;font-size: 0.7em;line-height: 1.4em;" class="koshinrireki">
+            <details style="margin: 7px 0;">
+                <summary style="font-size: 120%;border-bottom: 1px solid white;">v0.0.6</summary>
+                <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
+                    <li>現在地を表示するマーカー&nbsp;<img src="static/image/userpoint.png" style="width: 1em;height: 1em;">&nbsp;を追加</li>
+                    <li>現在地を修正する機能を追加</li>
+                    <li>地図をタイルからポリゴンに変更</li>
+                </ul>
+            </details>
             <details style="margin: 7px 0;">
                 <summary style="font-size: 120%;border-bottom: 1px solid white;">v0.0.5</summary>
                 <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
