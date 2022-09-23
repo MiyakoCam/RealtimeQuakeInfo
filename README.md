@@ -3,7 +3,7 @@ RealtimeQuakeInfoのソースコードです。
 [http://nanka.html.xdomain.jp/html/RealtimeQuakeInfo/](http://nanka.html.xdomain.jp/html/RealtimeQuakeInfo/) にて公開しております。
 
  **かなり読みにくいコードです。** すみません。  
-また、コードの転用なども可能です。  
+ 参考にするのは大歓迎です。転用なども可能です。  
 ぜひ自分流に改造してお使いくださいませ。
 
 それはそうと、確かに「関西電気保安協会」って普通に読めないですよね～（関西人なら）  
