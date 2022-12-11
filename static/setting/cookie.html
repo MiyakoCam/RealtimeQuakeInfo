@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cookieの設定をしてください。</title>
+        <meta charset="UTF-8" lang="ja">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="description" content="RealtimeQuakeInfoのCookie設定用の案内ページです。">
+        <!--自前のCSS読み込み-->
+        <!--SNSでのサイト表示-->
+        <meta property="twitter:card" content="summary">
+        <meta property="twitter:site" content="@MiyakoCam">
+        <meta property="twitter:description" content="Cookieの設定をしてください。">
+        <meta property="og:title" content="Cookieの設定をしてください。">
+        <meta property="og:image" content="http://nanka.html.xdomain.jp/html/RealtimeQuakeInfo/static/image/logo.png">
+        <meta property="og:site_name" content="Cookieの設定をしてください。">
+        <!--その他のCSS・ライブラリ読み込み-->
+        <script src="https://kit.fontawesome.com/e9f92a9dd0.js" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-9SL593EYR6"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            
+            gtag('config', 'G-9SL593EYR6');
+        </script>
+        <style>
+            @font-face {
+                font-family: Shingo;
+                font-weight: 300;
+                src: url(A-OTF-ShinGoPro-Regular-2.woff);
+            }
+            @font-face {
+                font-family: Shingo;
+                font-weight: 400;
+                src: url(A-OTF-ShinGoPro-Medium-2.woff);
+            }
+            @font-face {
+                font-family: Shingo;
+                font-weight: 500;
+                src: url(A-OTF-ShinGoPro-DeBold-2.woff);
+            }
+            .header {
+                font-size: 2rem;
+                position: fixed;
+                width: 100%;
+                height: max(2rem,15%);
+                background: #4285f4;
+                color: white;
+                top: 0;
+                left: 0;
+                z-index: 1;
+            }
+            .header-text {
+                position: absolute;
+                top: 50%;
+                text-align: center;
+                font-family: "Shingo";
+                font-weight: 500;
+                transform: translate(0,-58%);
+                width: 100%;
+            }
+            h1,h2 {
+                font-family: "Shingo";
+                font-weight: 300;
+                line-height: 1.5em;
+                margin: 0;
+                margin-bottom: 1em;
+            }
+            .toph1 {
+                margin: 0;
+                padding-top: 100vh;
+            }
+            .imp {
+                font-weight: 500;
+                text-decoration: underline;
+            }
+            .topmessage {
+                height: 85%;
+                width: 100%;
+                position: absolute;
+                top: 15%;
+                left: 0;
+                background: #34a853;
+                color: white;
+            }
+            .topmessage div {
+                font-family: "Shingo";
+                font-weight: 300;
+                line-height: 1.5em;
+                font-size: 2rem;
+                width: 100%;
+                text-align: center;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%,-50%);
+            }
+            .topmessage span {
+                font-family: "Shingo";
+                font-weight: 300;
+                line-height: 1.5em;
+                font-size: 1.2rem;
+                width: 100%;
+                text-align: center;
+                position: absolute;
+                bottom: 2rem;
+                left: 50%;
+                transform: translate(-50%,0);
+            }
+            .setsumei img {
+                width: 45%;
+                height: fit-content;
+                margin-right: 1em;
+            }
+            .setsumei div {
+                display: flex;
+                margin-bottom: 0.5em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header"><span class="header-text">Cookieの設定</span></div>
+        <div class="topmessage">
+            <div>
+                ようこそ。
+                <br>RealtimeQuakeInfoへお越しいただきありがとうございます。
+            </div>
+            <span>
+                と言いたいところなのですが…
+                <br>↓
+            </span>
+        </div>
+        <h2 class="toph1" style="text-align: center;">
+            <br>RealtimeQuakeInfoの正確な動作には、<span class="imp">「Cookie」</span>が必要です。
+            <br><span style="font-size: 65%;">(Cookieといえば、チョコチップは欠かせないですよね。)</span>
+            <div style="margin: 0.5em;margin-top: 1em;text-align: left;border-bottom: #4285f4 3px solid;"><span style="font-size: 85%;color: #4285f4;margin-right: 1em;">◆</span>Cookieとは？</div>
+            ここで言うCookieとは<span class="imp">「ブラウザ」</span>のCookieの方で、ブラウザに一時的に情報を保存できる仕組みのことを言います。
+            <br>ではどこでCookieを使うのでしょうか？
+            <ul style="text-align: left;font-size: 0.8em;line-height: 1.5em;">
+                <li>時間を保存するとき</li>
+                <li>リプレイしてるか確認するとき</li>
+                <li>エラーが何回目か確認するとき</li>
+            </ul>
+            などなどです。
+            <br>もし、これらが無くなってしまうと、リプレイするときにいつから始めたか、今はいつなのか、何回同じエラーが起きているかが分かりません。
+            <br>そのため、このページにて設定していただきますようお願いをしております。
+        </h2>
+        <h2>
+            <div style="margin: 0.5em;margin-top: 1em;text-align: left;border-bottom: #4285f4 3px solid;"><span style="font-size: 85%;color: #4285f4;margin-right: 1em;">◆</span>Cookieの設定方法</div>
+            各ブラウザにての設定方法を記載していますのでご参考ください。
+            <br>下のリストをクリックすると対応するブラウザの案内に飛びます。
+            <ul style="line-height: 1.5em;">
+                <li><a href="#chrome_set" style="color: black;"><span style="margin-right: 1em;"><img src="image/logo_chrome.png" style="height: 1.5em;" title="Google Chrome Icon" alt="Google Chrome Icon"></span>Google Chrome</a></li>
+                <li><a href="#edge_set" style="color: black;"><span style="margin-right: 1em;"><img src="image/logo_edge.png" style="height: 1.5em;" title="Microsoft Edge Icon" alt="Microsoft Edge Icon"></span>Microsoft Edge</a></li>
+                <li><a href="#firefox_set" style="color: black;"><span style="margin-right: 1em;"><img src="image/logo_firefox.png" style="height: 1.5em;" title="Mozilla Firefox Icon" alt="Mozilla Firefox Icon"></span>Mozilla Firefox</a></li>
+            </ul>
+            <br>
+            <div id="chrome_set" style="margin: 0.5em;margin-top: 1em;text-align: left;border-bottom: #4285f4 3px solid;"><span style="margin-right: 1em;"><img src="image/logo_chrome.png" style="height: 1.5em;" title="Google Chrome Icon" alt="Google Chrome Icon"></span>Google Chrome</div>
+                <div class="setsumei" style="padding-left: 1em;">
+                    <div><img src="image/chrome/chrome1.png">①<br>右上のメニューを開きます。</div>
+                    <div><img src="image/chrome/chrome2.png">②<br>メニューの中の「設定」を開きます。</div>
+                    <div><img src="image/chrome/chrome3.png">③<br>設定の左のメニューから「プライバシーとセキュリティ」を開きます。</div>
+                    <div><img src="image/chrome/chrome4.png">④<br>右側の設定本体から「Cookie と他のサイトデータ」を開きます。</div>
+                    <div><img src="image/chrome/chrome5.png">⑤<br>「Cookie をすべて受け入れる」をオンにします。</div>
+                    <div><img src="image/chrome/chrome6.png">⑥<br>（操作⑤と同様）<br>左側のボタンが青色になった(オンになった)ことを確認します。</div>
+                    <div><img src="image/chrome/chrome7.png">(⑦)<br>(この操作はCookieをブロックしておきたい方向けです。こうしておくことで知らないページからのCookieをブロックできます。)<br>⑤の画面を下にスクロールし、「常に Cookie を使用できるサイト」のブロックの右上にある「追加」をクリックし、出てきた入力ボックスに<br>「nanka.html.xdomain.jp」<br>と入力して「追加」をクリックします。</div>
+                </div>
+            <br>
+            <div id="edge_set" style="margin: 0.5em;margin-top: 1em;text-align: left;border-bottom: #4285f4 3px solid;"><span style="margin-right: 1em;"><img src="image/logo_edge.png" style="height: 1.5em;" title="Microsoft Edge Icon" alt="Microsoft Edge Icon"></span>Microsoft Edge</div>
+                <div class="setsumei" style="padding-left: 1em;">
+                    <div><img src="image/edge/edge1.png">①<br>右上のメニューを開きます。</div>
+                    <div><img src="image/edge/edge2.png">②<br>メニューをスクロール(下へ動かす)して「設定」を開きます。</div>
+                    <div><img src="image/edge/edge3.png">③<br>設定の左のメニューから「Cookieとサイト…」を開きます。</div>
+                    <div><img src="image/edge/edge4.png">④<br>右側の設定本体から「Cookie とサイトデータの管理と削除」を開きます。</div>
+                    <div><img src="image/edge/edge5.png">⑤<br>「Cookie データの保存と読み取りをサイトに許可する」をオンにします。</div>
+                    <div><img src="image/edge/edge6.png">⑥<br>（操作⑤と同様）<br>右側のスイッチが青色になった(オンになった)ことを確認します。</div>
+                    <div><img src="image/edge/edge7.png">(⑦)<br>(この操作はCookieをブロックしておきたい方向けです。こうしておくことで知らないページからのCookieをブロックできます。)<br>⑤の画面を下にスクロールし、「許可」のブロックの右上にある「追加」をクリックし、出てきた入力ボックスに<br>「nanka.html.xdomain.jp」<br>と入力して「追加」をクリックします。</div>
+                </div>
+            <br>
+            <div id="firefox_set" style="margin: 0.5em;margin-top: 1em;text-align: left;border-bottom: #4285f4 3px solid;"><span style="margin-right: 1em;"><img src="image/logo_firefox.png" style="height: 1.5em;" title="Mozilla Firefox Icon" alt="Mozilla Firefox Icon"></span>Mozilla Firefox</div>
+            追記中です。<br>もうしばらくお待ちください。
+        </h2>
+    </body>
+</html>

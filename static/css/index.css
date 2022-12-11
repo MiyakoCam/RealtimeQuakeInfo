@@ -14,7 +14,7 @@ input{
     right: 0;
     top: 0;
     z-index: 1;
-    background-color: #BBD5FA;
+    background-color: #cbdefc;
     /*background-color: #33424F;*/
 }
 #shindo {
@@ -65,7 +65,7 @@ input{
     left: 15vw;
     width: 50%;
     height: 25vh;
-    padding-left: 10px;
+    padding-left: 2px;
 }
 #yosojikan {
     display: none;
@@ -146,7 +146,7 @@ margin: 5vh auto;
 font-family: 'Noto Sans JP';
 font-size: 1.5rem;
 color: #ffffff;
-overflow-y: auto;
+overflow-y: scroll;
 }
 #settings.display {
 display: block;
@@ -166,9 +166,29 @@ margin: 5vh auto;
 font-family: 'Noto Sans JP';
 font-size: 1.5rem;
 color: #ffffff;
-overflow-y: auto;
+overflow-y: scroll;
 }
 #app_infomation.display {
+display: block;
+}
+#faq_table {
+display: none;
+position: relative;
+width: 70vw;
+height: 80vh;
+top: 0px;
+left: 0px;
+background-color: #4c0f64;
+z-index: 5000;
+box-shadow: 0px 0px 15px 5px #5c5c5c;
+padding: 5vh 10vw;
+margin: 5vh auto;
+font-family: 'Noto Sans JP';
+font-size: 1.5rem;
+color: #ffffff;
+overflow-y: scroll;
+}
+#faq_table.display {
 display: block;
 }
 .koshinrireki details:first-of-type summary:first-of-type::after {
@@ -176,26 +196,26 @@ display: block;
     content: ' \e031 NEW!';
     transform: translateY(12%);
 }
-#settings::-webkit-scrollbar,#app_infomation::-webkit-scrollbar {
+#settings::-webkit-scrollbar,#app_infomation::-webkit-scrollbar,#faq_table::-webkit-scrollbar {
     width: 22px;
 }
-#settings::-webkit-scrollbar-track,#app_infomation::-webkit-scrollbar-track {
+#settings::-webkit-scrollbar-track,#app_infomation::-webkit-scrollbar-track,#faq_table::-webkit-scrollbar-track {
     background: #e4e4e4;
 }
-#settings::-webkit-scrollbar-thumb,#app_infomation::-webkit-scrollbar-thumb {
+#settings::-webkit-scrollbar-thumb,#app_infomation::-webkit-scrollbar-thumb,#faq_table::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, rgb(139, 116, 219) 0%, rgba(209,98,190,1) 100%);
     border: transparent 6px solid;
     border-radius: 12.5px;
     background-clip: content-box;
 }
-#coloring_select {
+#coloring_select,#realtimedata {
 font-size: 75%;
 font-family: 'Noto Sans JP';
 }
 #coloring_con tr td:first-of-type {
     cursor: default;
 }
-#set_closebtn,#appinfo_closebtn {
+#set_closebtn,#appinfo_closebtn,#faq_closebtn {
 position: absolute;
 font-size: 35px;
 right: 2rem;
@@ -204,7 +224,7 @@ cursor: pointer;
 user-select: none;
 transition: transform 0.25s ease-in-out 0s;
 }
-#set_closebtn:hover,#appinfo_closebtn:hover {
+#set_closebtn:hover,#appinfo_closebtn:hover,#faq_closebtn:hover {
 background-color: #80808080;
 border-radius: 5px;
 transform: rotate(-90deg);
@@ -217,9 +237,9 @@ button {
     font-size: 1em;
     font-family: 'Noto Sans JP',sans-serif;
 }
-.cap,.cap_left {
+/*.cap,.cap_left {
 z-index: 9999999;
-}
+}*/
 #error_mes_time,#error_mes_info,#error_mes_replay {
 background-color: #d11b61;
 color: #ffffff;
@@ -316,4 +336,76 @@ font-family: 'Noto Sans JP';
     left: 3px;
     top: 3px;
     outline: 3px white solid;
+}
+
+.acd-check{
+    display: none;
+}
+.acd-label{
+    background: #2c2e44;
+    color: #fff;
+    border: 1px solid rgb(255, 255, 255);
+    display: block;
+    margin-bottom: 3px;
+    padding: 10px;
+    font-size: 1.1rem;
+    position: relative;
+}
+.acd-check:checked ~ .acd-label{
+    margin-bottom: 0;
+}
+.acd-check:checked ~ .acd-content{
+    margin-bottom: 3px;
+}
+.acd-label:after{
+    background: #00000000;
+    box-sizing: border-box;
+    content: '\e147';
+    display: block;
+    font-family: "Material Symbols Outlined";
+    font-size: 1.8rem;
+    height: 48px;
+    padding: 6px 20px;
+    position: absolute;
+    right: 0;
+    top: 0px;
+    transition: .5s;
+}
+.acd-content{
+    background: #1b1e22;
+    height: 0;
+    opacity: 0;
+    padding: 0 10px;
+    padding-left: 1rem;
+    visibility: hidden;
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+.acd-check:checked + .acd-label:after{
+    transform: rotate(45deg);
+}
+.acd-check:checked + .acd-label + .acd-content{
+    min-height: 2rem;
+    height: auto;
+    opacity: 1;
+    padding: 10px;
+    visibility: visible;
+    padding-left: 1rem;
+}
+
+.code {
+    display: inline-block;
+    font-family: 'Source Code Pro', monospace;
+    font-weight: 500;
+    height: 1.5em;
+    background: #dadde0;
+    color: black;
+    padding: 0 0.3rem;
+    border-radius: 5px;
+    margin: 0 0.3rem;
+}
+
+.impfaq {
+    border-bottom: 2px #ff0000 solid;
+    font-weight: 500;
 }

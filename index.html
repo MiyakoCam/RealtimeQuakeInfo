@@ -25,6 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../fonts.css">
     <link rel="stylesheet" href="../../bin/fonts/outlined_icons.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0">
@@ -55,12 +56,14 @@
         <div id="quakeinfo"></div>
         <!--<div class="test"><h1><a href="index_2.html">能登半島震度6弱<br>テストはこちら</a></h1></div>-->
         <span class="btn_atsumari">
+            <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="getinfo_click"  data-tippy-content="情報取得を一時停止/再開">pause</span>
             <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="appinfo_click"  data-tippy-content="アプリの情報">info</span>
+            <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="faq_click"  data-tippy-content="よくある質問（FAQ）">live_help</span>
             <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="infocopy_click"  data-tippy-content="地震情報をコピー" data-clipboard-target="#copyitem_jishin_textarea">content_copy</span>
             <span class="material-symbols-outlined cap" style="font-size: 7vh;cursor: pointer;" id="settings_click"  data-tippy-content="設定を開く">settings</span>
         </span>
     </div>
-    <div id="clock"></div>
+    <div id="clock" class="cap" data-tippy-content="色が変わった場合は「よくある質問（FAQ）」をご覧ください。"></div>
     
     <div id="yosojikan">
         <div id="pha_con">P波<input type="text" id="pha_yosokujikan" readonly>秒</div>
@@ -76,7 +79,8 @@
                     <td style="width: 40%;" align="center" class="cap" data-tippy-content="震度配色の色を決定します。">配色テーマ</td>
                     <td style="width: 60%;">
                         <select id="coloring_select" style="width: 90%;">
-                            <option value="JQuake" selected>JQuake(標準)</option>
+                            <option value="NJQuake" selected>新JQuake(標準)</option>
+                            <option value="JQuake">旧JQuake</option>
                             <option value="Quarog">Quarog</option>
                             <option value="気象庁">気象庁</option>
                             <option value="NHK">NHK</option>
@@ -117,6 +121,18 @@
                         </span>
                     </td>
                 </tr>
+                <tr id="set_jishininfonokosu">
+                    <td align="center" class="cap" data-tippy-content="緊急地震速報の発表がなくなっても、次の緊急地震速報まで地震情報を表示しておくかどうかです。<br>初期状態は地震情報を残す設定です。<br>地震情報が残っているときにこの設定をオフにしてもう一度オンにしても地震情報は表示されません。">情報を残しておく</td>
+                    <td>
+                        <span class="switch_windows">
+                            <label class="switch_windows_label">
+                                <input type="checkbox" class="switch_windows_input" id="switch_jishininfonokosu">
+                                <span class="switch_windows_content"></span>
+                                <span class="switch_windows_circle"></span>
+                            </label>
+                        </span>
+                    </td>
+                </tr>
                 <tr id="set_latlng">
                     <td align="center" class="cap" data-tippy-content="現在地が異なる場合に修正します。<br>初期設定ではアクセス情報から取得しているので、都心部以外からアクセスしたときに間違っていることが多いです。">現在地の修正</td>
                     <td><button id="set_latlngset" style="font-size: 75%;" class="cap" data-tippy-content="現在地を修正するため別のページへ飛び、修正します。">修正する</button>&emsp;<button id="set_latlngdel" style="font-size: 75%;" class="cap" data-tippy-content="修正した現在地を、アクセス情報に基づく現在地に戻します。">初期設定に戻す</button></td>
@@ -133,6 +149,54 @@
                         </span>
                     </td>
                 </tr>
+                <tr>
+                    <td style="border-top: white 2px solid;display: block;width: 250%;text-align: center;" class="cap" data-tippy-content="ここから下の設定は開発者専用です。<br>設定を変更するにはパスワードが必要です。">開発者専用オプション</td>
+                </tr>
+                <tr id="set_realtimedata">
+                    <td style="width: 40%;" align="center" valign="top" class="cap" data-tippy-content="地図上に表示する、リアルタイムの情報を切り替えます。">リアルタイムデータ</td>
+                    <td style="width: 60%;">
+                        <span class="switch_windows cap" data-tippy-content="リアルタイムデータの情報を表示するかを選択します。">
+                            <label class="switch_windows_label">
+                                <input type="checkbox" class="switch_windows_input" id="switch_realtimedata">
+                                <span class="switch_windows_content"></span>
+                                <span class="switch_windows_circle"></span>
+                            </label>
+                        </span>
+                        <br>
+                        <select id="realtimedata" style="width: 90%;" class="cap" data-tippy-content="リアルタイムデータの情報を選択します。">
+                            <option value="rd-shindo" selected>リアルタイム震度</option>
+                            <option value="rd-pga">最大加速度</option>
+                            <option value="rd-pgv">最大速度</option>
+                            <option value="rd-pgd">最大変位</option>
+                            <option value="rd-0.125Hz">0.125Hz速度応答</option>
+                            <option value="rd-0.25Hz">0.25Hz速度応答</option>
+                            <option value="rd-0.5Hz">0.5Hz速度応答</option>
+                            <option value="rd-1.0Hz">1.0Hz速度応答</option>
+                            <option value="rd-2.0Hz">2.0Hz速度応答</option>
+                            <option value="rd-4.0Hz">4.0Hz速度応答</option>
+                        </select>
+                        <br>地表 <span class="switch_windows cap" data-tippy-content="左(OFF)にすると、地表の情報を<br>右(ON)にすると、地中の情報を表示します。"><label class="switch_windows_label"><input type="checkbox" class="switch_windows_input" id="switch_surface"><span class="switch_windows_content"></span><span class="switch_windows_circle"></span></label></span> 地中
+                        <!--<button id="set_rd_surface" style="font-size: 75%;" class="cap" data-tippy-content="リアルタイムデータの対象を地表にします。">地表</button><button id="set_rd_borehole" style="font-size: 75%;" class="cap" data-tippy-content="リアルタイムデータの対象を地中にします。">地中</button>-->
+                    </td>
+                </tr>
+                <tr id="set_onsei">
+                    <td align="center" class="cap" data-tippy-content='<span style="font-size: 120%;">この機能は開発中です。</span>'>音声テスト</td>
+                    <td>
+                        <button id="set_eew1test" style="font-size: 75%;" class="cap" data-tippy-content="緊急地震速報(予報)を受信したときの音声を流します。"><i class="fas fa-play"></i> 予報テスト</button>　<button id="set_eew2test" style="font-size: 75%;" class="cap" data-tippy-content="緊急地震速報(警報)を受信したときの音声を流します。"><i class="fas fa-play"></i> 警報テスト</button>
+                    </td>
+                </tr>
+                <tr id="set_yosokujikan">
+                    <td align="center" class="cap" data-tippy-content='<span style="font-size: 120%;">この機能は開発者専用です。<br>オンにするにはパスワードが必要です。</span>'>地震波到達予測時間</td>
+                    <td>
+                        <span class="switch_windows">
+                            <label class="switch_windows_label">
+                                <input type="checkbox" class="switch_windows_input" id="switch_admin_yosokujikan">
+                                <span class="switch_windows_content"></span>
+                                <span class="switch_windows_circle"></span>
+                            </label>
+                        </span>
+                    </td>
+                </tr>
             </table>
             
         </div>
@@ -141,7 +205,7 @@
         <span class="material-symbols-outlined cap" id="appinfo_closebtn" data-tippy-content="アプリの情報を閉じる">close</span>
         <p style="font-family: 'Nanka Sans','Noto Sans JP';font-weight: normal;text-align: center;font-size: 2rem;margin-top: 0;">Infomation - 情報</p>
         <div style="text-align: center;line-height: 1.6em;">
-            RealtimeQuakeInfo v0.0.6<br>
+            RealtimeQuakeInfo v0.0.7<br>
             By <a href="https://twitter.com/MiyakoCam" target="_blank" style="color: white;"><i class="fa-brands fa-twitter" style="color: white;"></i> MiyakojimaCam</a>
         </div>
         リンク
@@ -157,7 +221,7 @@
             <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
                 <li>Yahoo!地震情報 by <a href="https://typhoon.yahoo.co.jp/weather/jp/earthquake/" target="_blank" style="color: white;">Yahoo!Japan <i class="fa-solid fa-arrow-up-right-from-square"></i></a></li>
                 <li>NIED強震モニタ by <a href="https://twitter.com/wolf204821" target="_blank" style="color: white;"><i class="fa-brands fa-twitter" style="color: white;"></i> Wolf20482</a>さん</li>
-                <li>WorldTimeAPI by <a href="http://worldtimeapi.org/" target="_blank" style="color: white;">WorldTimeAPI <i class="fa-solid fa-arrow-up-right-from-square"></i></a></li>
+                <li>日本標準時 by <a href="https://www.nict.go.jp/index.html" target="_blank" style="color: white;">情報通信研究機構 <i class="fa-solid fa-arrow-up-right-from-square"></i></a></li>
             </ul>
         </div>
         SpecialThanks
@@ -172,11 +236,20 @@
         更新履歴
         <div style="padding-left: 5%;font-size: 0.7em;line-height: 1.4em;" class="koshinrireki">
             <details style="margin: 7px 0;">
+                <summary style="font-size: 120%;border-bottom: 1px solid white;">v0.0.7</summary>
+                <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
+                    <li>FAQ(よくある質問)の追加</li>
+                    <li>リアルタイムデータ表示の追加</li>
+                    <li>Cookie有効化紹介ページの追加</li>
+                    <li>【実験的機能】音声の追加</li>
+                </ul>
+            </details>
+            <details style="margin: 7px 0;">
                 <summary style="font-size: 120%;border-bottom: 1px solid white;">v0.0.6</summary>
                 <ul style="margin-top: 0.3em;margin-bottom: 0.6em;">
+                    <li>地図をタイルからポリゴンに変更</li>
                     <li>現在地を表示するマーカー&nbsp;<img src="static/image/userpoint.png" style="width: 1em;height: 1em;">&nbsp;を追加</li>
                     <li>現在地を修正する機能を追加</li>
-                    <li>地図をタイルからポリゴンに変更</li>
                 </ul>
             </details>
             <details style="margin: 7px 0;">
@@ -221,8 +294,197 @@
             </details>
         </div>
     </div>
-
-    <span style="position: absolute;top: 10px;left: 10px;background-color: #ffffff;font-size: 1rem;color: #000000;border-radius: 5px;z-index: 500;padding: 5px;font-weight: 400;outline: #000000 dashed 2px;">お知らせ : 自動リロード機能を追加しました。</span>
+    <div id="faq_table">
+        <span class="material-symbols-outlined cap" id="faq_closebtn" data-tippy-content="よくある質問（FAQ）を閉じる">close</span>
+        <p style="font-family: 'Nanka Sans','Noto Sans JP';font-weight: normal;text-align: center;font-size: 2rem;margin-top: 0;">FAQ - よくある質問</p>
+        <p style="font-size: 1.2rem;">
+            まず始めに、<br>
+            ・ネットワーク接続はありますか？<br>
+            ・ネットワークの速度は十分ですか？<br>
+            ・別のネットワークに接続してみてください。<br>
+            を確認してください。<br>
+            以下の回答を試してみても直らない場合、<br>
+            <span style="border: #969696 solid 2px;background-color: #eeeeee;border-radius: 5px;margin: 0px 5px;padding: 3px 5px;display: inline-block;color: #000000;">Shift</span>+<span style="border: #969696 solid 2px;background-color: #eeeeee;border-radius: 5px;margin: 0px 5px;padding: 3px 5px;display: inline-block;color: #000000;">F5</span>または
+            <span style="border: #969696 solid 2px;background-color: #eeeeee;border-radius: 5px;margin: 0px 5px;padding: 3px 5px;display: inline-block;color: #000000;">Shift</span>+<span style="border: #969696 solid 2px;background-color: #eeeeee;border-radius: 5px;margin: 0px 5px;padding: 3px 5px;display: inline-block;color: #000000;">Ctrl</span>+
+            <span style="border: #969696 solid 2px;background-color: #eeeeee;border-radius: 5px;margin: 0px 5px;padding: 3px 5px;display: inline-block;color: #000000;">R</span>を押してハード再読み込みをしてください。
+        </p>
+        <div style="border-bottom: 2px solid white;margin: 0.4rem 0;">エラー</div>
+        <input id="acd-check4" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check4">エラー：時刻の取得に失敗しました。</label>
+        <div class="acd-content">
+            <span class="impfaq">ネットワークエラー</span>の可能性があります。<br>
+            ・ネットワーク接続はありますか？<br>
+            ・ネットワークの速度は十分ですか？<br>
+            ━追記━<br>
+            <span style="display: inline-block;padding-left: 1em;">
+                過去の一部に<span class="code">worldtimeapi.org</span>がダウンしていた可能性がありました。<br>
+                これからの開発では別のところからも時刻を取得できるように修正いたします。
+            </span><br>
+            ・情報通信研究機構より時刻の取得を開始しました。
+        </div>
+        <input id="acd-check1-1" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check1-1">エラー：地震情報の取得に失敗しました。</label>
+        <div class="acd-content">
+            <span class="impfaq">設定ミス</span>の可能性があります。<br>
+            赤く示されている所を設定し直してください。
+        </div>
+        <input id="acd-check1-2" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check1-2">エラー：リプレイの時刻設定が未来です。</label>
+        <div class="acd-content">
+            <span class="impfaq">設定ミス</span>の可能性があります。<br>
+            赤く示されている所を設定し直してください。
+        </div>
+        <div style="border-bottom: 2px solid white;margin: 0.4rem 0;">時間</div>
+        <input id="acd-check2-1" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check2-1">時間が表示されません。</label>
+        <div class="acd-content">
+            ・<span class="code">worldtimeapi.org</span>がブロックされていませんか？<br>
+            ━追記━<br>
+            <span style="display: inline-block;padding-left: 1em;">
+                過去の一部に<span class="code">worldtimeapi.org</span>がダウンしていた可能性がありました。<br>
+                これからの開発では別のところからも時刻を取得できるように修正いたします。
+            </span><br>
+            ・情報通信研究機構より時刻の取得を開始しました。
+        </div>
+        <input id="acd-check2-2" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check2-2">時間が止まっています。</label>
+        <div class="acd-content">
+            ・<span class="impfaq">一時停止モード</span>になっていませんか？<br>
+            　時間が<span style="background: #4285f4;color: white;">青色と白</span>になっています。をご覧ください。<br>
+            ・<span class="code">worldtimeapi.org</span>がブロックされていませんか？
+        </div>
+        <input id="acd-check2-7" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check2-7">時間が数秒おきにしか更新されません。</label>
+        <div class="acd-content">
+            <span class="impfaq">ネットワークの速度が遅い可能性</span>があります。<br>
+            ・ネットワーク接続はありますか？<br>
+            ・ネットワークの速度は十分ですか？<br>
+            ・別のネットワークに接続してみてください。
+        </div>
+        <input id="acd-check2-3" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check2-3">時間が端末より遅れています。</label>
+        <div class="acd-content">
+            時間が端末より遅れる秒数は、遅延オフセットによって設定されています。<br>
+            今の時間のままAPIに問い合わせると、Yahoo!APIがエラーを返してきますので、2秒ほど遅らせています。<br>
+            これにより、ほかのアプリより<span class="impfaq">1秒ほど緊急地震速報の受信が遅れています。</span>
+        </div>
+        <input id="acd-check2-4" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check2-4">時間が<span style="background: #6e004d;color: white;">紫色と白</span>になっています。</label>
+        <div class="acd-content">
+            <span class="impfaq">リプレイモード</span>になっています。<br>
+            ・設定からリプレイ停止を押してください。
+        </div>
+        <input id="acd-check2-5" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check2-5">時間が<span style="background: #9999dd;color: red;">薄紫色と赤</span>になっています。</label>
+        <div class="acd-content">
+            <span class="impfaq">時間を取得できていません。</span><br>
+            ・ネットワーク接続はありますか？<br>
+            ・ネットワークの速度は十分ですか？<br>
+            ・別のネットワークに接続してみてください。<br>
+            ━追記━<br>
+            <span style="display: inline-block;padding-left: 1em;">
+                過去の一部に<span class="code">worldtimeapi.org</span>がダウンしていた可能性がありました。<br>
+                これからの開発では別のところからも時刻を取得できるように修正いたします。
+            </span><br>
+            ・情報通信研究機構より時刻の取得を開始しました。
+        </div>
+        <input id="acd-check2-6" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check2-6">時間が<span style="background: #4285f4;color: white;">青色と白</span>になっています。</label>
+        <div class="acd-content">
+            <span class="impfaq">全ての情報の取得を一時停止</span>しています。<br>
+            ・ボタン群の<span class="material-symbols-outlined">play_arrow</span>再開ボタンを押してください。
+        </div>
+        <div style="border-bottom: 2px solid white;margin: 0.4rem 0;">地震情報</div>
+        <input id="acd-check3-1" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check3-1">地震が発生しているが、表示されない。</label>
+        <div class="acd-content">
+            地震は発生しているが、緊急地震速報が発令されない場合<br>
+            <span style="display: inline-block;padding-left: 1em;">・地震の情報は<span class="impfaq">表示されません。</span></span><br>
+            <span style="display: inline-block;padding-left: 2em;">緊急地震速報を発令するかは気象庁が判断します。<br>被害や揺れがないと予測された場合などには実際に揺れがあっても発令されないことがあります。</span><br>
+            緊急地震速報がまだ発表されていない場合<br>
+            <span style="display: inline-block;padding-left: 1em;">・緊急地震速報は、震源の近くの場所だと<span class="impfaq">揺れが来る前に届かない</span>ことがあります。</span><br>
+            <span style="display: inline-block;padding-left: 2em;">これは緊急地震速報のシステム上、どうしても発生してしまう遅延です。ご了承ください。</span><br>
+            緊急地震速報は発表されたが、まだ受信できていない場合<br>
+            <span style="display: inline-block;padding-left: 1em;">・取得の遅延によって、<span class="impfaq">最新の情報を取得できていない</span>ことがあります。</span><br>
+            <span style="display: inline-block;padding-left: 2em;">1、2秒ほどお待ちください。</span>
+        </div>
+        <input id="acd-check3-2" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check3-2">他のアプリと地震の情報が違います。</label>
+        <div class="acd-content">
+            取得の遅延によって、<span class="impfaq">最新の情報を取得できていない</span>ことがあります。<br>
+            1、2秒ほどお待ちください。
+        </div>
+        <div style="border-bottom: 2px solid white;margin: 0.4rem 0;">機能</div>
+        <input id="acd-check4-1" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check4-1">リプレイの仕方が分かりません。</label>
+        <div class="acd-content">
+            リプレイは、ある時間に巻き戻しておこった地震を確認する機能です。<br>
+            1, 「設定」の「リプレイ」を見つけます。<br>
+            2, 左上の欄に巻き戻したい時間の「年月日」を入力します。<br>
+            3, その横の欄に巻き戻したい時間の「時分秒」を入力します。<br>
+            <span style="display: inline-block;padding-left: 1em;"><span class="impfaq" style="color: red;">この時に未来の時間を入力しないでください！</span></span><br>
+            4, 「リプレイ開始」ボタンを押してリプレイを開始します。<br>
+            5, リプレイを終了する場合は「リプレイ停止」ボタンを押します。
+        </div>
+        <input id="acd-check4-2" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check4-2">リプレイはいつからできますか？</label>
+        <div class="acd-content">
+            リプレイの遡りの最大時間は、Yahoo!地震情報のAPI提供開始の時間で、2019年08月27日 10時01分20秒です。<br>
+            それより前をリプレイしてもエラーになります。
+        </div>
+        <input id="acd-check4-3" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check4-3">情報取得を一時停止/再開とは何ですか？</label>
+        <div class="acd-content">
+            時間・地震の全ての情報の取得を停止します。<br>
+            ・一時停止中は、時間が<span style="background: #4285f4;color: white;">青色と白</span>になります。<br>
+            ・一時停止中に出された緊急地震速報やその他の情報は、<span class="impfaq">一切受信できません。</span>
+        </div>
+        <div style="border-bottom: 2px solid white;margin: 0.4rem 0;">機能</div>
+        <input id="acd-check5-1" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check5-1">リアルタイムデータとは何ですか？</label>
+        <div class="acd-content">
+            リアルタイムデータとは、防災科学技術研究所から配信されている、リアルタイムの地震計データのことです。<br>
+            リアルタイムデータには、<br>
+            ・リアルタイム震度<br>
+            ・最大加速度<br>
+            ・最大速度<br>
+            ・最大変位<br>
+            ・0.125Hz速度応答<br>
+            ・0.25Hz速度応答<br>
+            ・0.5Hz速度応答<br>
+            ・1.0Hz速度応答<br>
+            ・2.0Hz速度応答<br>
+            ・4.0Hz速度応答<br>
+            があります。<br>
+            それぞれの説明は、リアルタイムデータの詳細についてをご覧ください。
+        </div>
+        <input id="acd-check5-2" class="acd-check" type="checkbox">
+        <label class="acd-label" for="acd-check5-2">リアルタイムデータの種類の意味</label>
+        <div class="acd-content">
+            ・リアルタイム震度<br>
+            <span style="display: inline-block;padding-left: 2em;">震度の大きさを表します。<br>単位は「JMA Int」です。</span><br>
+            ・最大加速度<br>
+            <span style="display: inline-block;padding-left: 2em;">どれだけ加速しているかを表します。<br>速度が1cm/秒ずつ速くなる加速状態を1Galとしています。<br>単位は「Gal」です。</span><br>
+            ・最大速度<br>
+            <span style="display: inline-block;padding-left: 2em;">速度を表します。<br>単位は「cm/s」です。</span><br>
+            ・最大変位<br>
+            <span style="display: inline-block;padding-left: 2em;">どれだけ地面が動いたかを表します。<br>単位は「gal」です。</span><br>
+            ・0.125Hz速度応答<br>
+            ・0.25Hz速度応答<br>
+            ・0.5Hz速度応答<br>
+            ・1.0Hz速度応答<br>
+            ・2.0Hz速度応答<br>
+            ・4.0Hz速度応答<br>
+            があります。<br>
+            それぞれの説明は、リアルタイムデータの詳細についてをご覧ください。
+        </div>
+        <span style="font-size: 1.2rem;">
+            質問が見当たらなかった場合は、<br>
+            <a href="https://twitter.com/messages/compose?recipient_id=1507132846401417227&text=RealtimeQuakeInfo - 問い合わせ（この下に書いてください。）" target="_blank" style="color: white;"><i class="fa-brands fa-twitter" style="color: #00acee;"></i> TwitterのDM</a>　か　<a href="mailto:nankatekito.mail@gmail.com?subject=RealtimeQuakeInfo問い合わせ&body=RealtimeQuakeInfoの問い合わせ%0D%0A%0D%0A─この下にお書きください。──%0D%0A%0D%0A" target="_blank" style="color: white;">メール</a>　でお問い合わせを
+        </span>
+    </div>
+    <span id="note_top_ura" style="position: absolute;top: 10px;left: 10px;background-color: #ffffff;font-size: 1rem;color: #000000;border-radius: 5px;z-index: 500;padding: 5px;font-weight: 400;outline: #000000 dashed 2px;">お知らせ : <span style="font-size: 80%;vertical-align: top;text-decoration: underline;cursor: pointer;" id="btn_note_top_ura">[+]</span></span>
+    <span id="note_top" style="position: absolute;top: 10px;left: 10px;background-color: #ffffff;font-size: 1rem;color: #000000;border-radius: 5px;z-index: 500;padding: 5px;font-weight: 400;outline: #000000 dashed 2px;">お知らせ : 時刻はNICTより取得しています。 <span style="font-size: 80%;vertical-align: top;text-decoration: underline;cursor: pointer;" id="btn_note_top">[x]</span></span>
     
     <span id="error_mes_time"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">schedule</span>時刻の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>
     <span id="error_mes_info"><span class="material-symbols-outlined ido space">warning</span>エラー：<span class="material-symbols-outlined ido space">description</span>地震情報の取得に失敗しました。<span class="material-symbols-outlined ido" style="text-decoration: underline;">help</span></span>
