@@ -10,7 +10,7 @@ RealtimeQuakeInfoのソースコードです。
 ♪かんさいーでんきほ～あんきょーかい♬
 
 ## 概要
-![realtimequakeinfo_test5kyo](https://user-images.githubusercontent.com/90699739/178728505-cc8ee5f8-6ad4-486d-b74d-e55998da9f6d.jpg)
+![realtimequakeinfo_test5kyo](https://user-images.githubusercontent.com/90699739/213858742-3b05ad45-3668-4b8d-941e-8de3dfcd7cae.png)
 震度5強を受信したときの配色一覧です。
 
 緊急地震速報をWebブラウザ上で受信できます。  
